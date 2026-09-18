@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <!-- Configuración de metadatos y fuentes que incluí para el estilo visual -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - OVERMARK Studio</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  
+  
+  <!-- SDK de Supabase que importé para conectar mi backend -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- Importé el SDK de PayPal para procesar los pagos de mis clientes -->
+<script src="https://www.paypal.com/sdk/js?client-id=AbazeYo4SKmzVv-KHHPZw_eRUBiGbqDhqMtfxqQV8Othk5DFj6OaW-en8cKSJ3i7IZEZSpHfErr3racq&currency=USD"></script>
+  
+  <script src="cart.js?v=4"></script>
+
+  <style>
+    :root {
+      --c-black: #0A0A0A;
+      --c-carbon: #1E1E1E;
+      --c-dark: #2A2A2A;
+      --c-mid: #6B6B6B;
+      --c-light: #BEBEBE;
+      --c-cream: #F5F5F0;
+      --c-gold: #C8A96E;
+      --c-danger: #C0392B;
+      --c-success: #27AE60;
+
+      --ff-display: 'Playfair Display', Georgia, serif;
+      --ff-ui: 'Inter', system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--ff-ui); background: var(--c-black); color: var(--c-cream); line-height: 1.6; padding-bottom: 4rem; }
+
+    header {
+      padding: 1.5rem 2rem; border-bottom: 1px solid var(--c-dark); display: flex; justify-content: space-between; align-items: center; background: var(--c-black);
+    }
+    .brand { font-family: var(--ff-display); font-weight: 700; font-size: 1.5rem; color: var(--c-cream); text-decoration: none; letter-spacing: 0.1em; }
+    .brand span { color: var(--c-gold); }
+    .nav-link { color: var(--c-mid); text-decoration: none; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.3s ease; }
+    .nav-link:hover { color: var(--c-cream); }
+
+    .checkout-container { max-width: 1200px; margin: 3rem auto; padding: 0 2rem; display: grid; grid-template-columns: 1fr 400px; gap: 3rem; }
+    
+    h1, h2, h3 { font-family: var(--ff-display); font-weight: 500; color: var(--c-white); margin-bottom: 1.5rem; }
+
+    
+    .cart-header { margin-bottom: 2rem; border-bottom: 1px solid var(--c-dark); padding-bottom: 1rem; }
+    .cart-header h1 { font-family: var(--ff-display); font-size: 2.5rem; letter-spacing: 0.05em; font-weight: 700; color: var(--c-cream); margin-bottom: 0.2rem; text-transform: uppercase; }
+    .cart-header p { color: var(--c-mid); font-size: 0.9rem; letter-spacing: 0.05em; }
+    
+    .delivery-info { font-size: 0.9rem; font-weight: 600; margin-bottom: 2rem; color: var(--c-light); }
+
+    .cart-items { display: flex; flex-direction: column; gap: 2rem; }
+    .cart-item { display: grid; grid-template-columns: 150px 1fr; gap: 1.5rem; align-items: start; }
+    .item-img { width: 150px; height: 150px; background: var(--c-carbon); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; border-radius: 4px; object-fit: cover; }
+    
+    .item-details-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+    .item-name { font-size: 1.1rem; font-weight: 600; color: var(--c-cream); font-family: var(--ff-ui); line-height: 1.3; }
+    .item-price { font-weight: 600; color: var(--c-cream); font-size: 1.1rem; }
+    
+    .item-meta { font-size: 0.85rem; color: var(--c-mid); margin-bottom: 1rem; line-height: 1.6; }
+    
+    .item-actions-row { display: flex; justify-content: space-between; align-items: flex-start; }
+    .item-qty-wrapper { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--c-light); }
+    .item-qty-wrapper span { font-weight: 600; }
+    
+    .item-links { display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; }
+    .item-link { background: none; border: none; color: var(--c-mid); font-size: 0.8rem; cursor: pointer; text-decoration: underline; transition: color 0.2s; }
+    .item-link:hover { color: var(--c-cream); }
+    .item-link.danger:hover { color: var(--c-danger); }
+
+    
+    .checkout-panel { background: var(--c-carbon); border-radius: 8px; padding: 2rem; height: fit-content; }
+    .checkout-panel h2 { font-family: var(--ff-ui); font-size: 1.1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.5rem; color: var(--c-cream); }
+    
+    .summary-row { display: flex; justify-content: space-between; margin-bottom: 1rem; color: var(--c-light); font-size: 0.9rem; align-items: center; }
+    .badge-free { background: var(--c-success); color: white; padding: 0.15rem 0.5rem; border-radius: 2px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; }
+    
+    .promo-row { margin: 1.5rem 0; padding: 1rem 0; border-top: 1px solid var(--c-dark); border-bottom: 1px solid var(--c-dark); display: flex; justify-content: space-between; color: var(--c-mid); font-size: 0.9rem; cursor: pointer; }
+    .promo-row:hover { color: var(--c-cream); }
+
+    .summary-total { display: flex; justify-content: space-between; margin-top: 1.5rem; font-size: 1.1rem; color: var(--c-cream); font-weight: 700; }
+
+    .payment-methods { margin-top: 2rem; }
+    .method-option { display: block; background: var(--c-dark); border: 1px solid var(--c-mid); padding: 1rem; border-radius: 4px; margin-bottom: 1rem; cursor: pointer; transition: 0.3s; font-size: 0.9rem; }
+    .method-option:hover { border-color: var(--c-gold); }
+    .method-option input[type="radio"] { margin-right: 0.5rem; }
+    
+    .pago-movil-form { display: none; background: #151515; padding: 1.5rem; border-radius: 4px; border: 1px dashed var(--c-gold); margin-bottom: 1rem; }
+    .pago-movil-form p { font-size: 0.85rem; color: var(--c-light); margin-bottom: 0.5rem; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: 0.8rem; color: var(--c-mid); margin-bottom: 0.3rem; text-transform: uppercase; }
+    .form-group input { width: 100%; background: var(--c-black); border: 1px solid var(--c-dark); color: var(--c-cream); padding: 0.8rem; border-radius: 4px; font-family: var(--ff-ui); }
+    .form-group input:focus { outline: none; border-color: var(--c-gold); }
+
+    .btn-submit { width: 100%; background: var(--c-cream); color: var(--c-black); border: none; padding: 1.2rem; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 2px; cursor: pointer; transition: opacity 0.3s; margin-top: 1rem; display: flex; justify-content: center; align-items: center; gap: 0.5rem; }
+    .btn-submit:hover { opacity: 0.9; }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-paypal { background: #0070BA; color: white; margin-top: 0.5rem; }
+    
+    .secure-badge { text-align: center; color: var(--c-mid); font-size: 0.75rem; margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.3rem; }
+
+    @media (max-width: 900px) {
+      .checkout-container { grid-template-columns: 1fr; }
+      .cart-item { grid-template-columns: 100px 1fr; }
+      .item-img { width: 100px; height: 100px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="brand">OVER<span>MARK</span></a>
+    <a href="index.html" class="nav-link">← Volver al Catálogo</a>
+  </header>
+
+  <main class="checkout-container">
+    
+    <div>
+      <div class="cart-header">
+        <h1>CARRO</h1>
+        <p id="itemCountLabel">Cargando...</p>
+      </div>
+      <div class="cart-items" id="cartContainer">
+        <p style="padding: 2rem 0; color: var(--c-mid);">Cargando carrito...</p>
+      </div>
+    </div>
+
+    
+    <div class="checkout-panel">
+      <h2>Resumen del Pedido</h2>
+      
+      <div id="summaryContainer">
+        <div class="summary-row"><span>Subtotal</span> <span id="subtotalLabel">$0.00</span></div>
+        <div class="summary-total"><span>Total Estimado</span> <span id="totalLabel">$0.00 USD</span></div>
+        <div class="summary-total" style="font-size: 0.95rem; margin-top: 0.5rem; color: var(--c-gold);"><span>Equivalente (BCV)</span> <span id="totalBsLabel">Calculando...</span></div>
+      </div>
+
+      <h3 style="margin-top: 2.5rem; font-size: 1rem; font-family:var(--ff-ui); font-weight:600; color:var(--c-mid);">Forma de Pago</h3>
+      
+      <div class="payment-methods">
+        <label class="method-option">
+          <input type="radio" name="payment_method" value="pago_movil" onchange="togglePaymentForm()" checked>
+          Pago Móvil (Nacional)
+        </label>
+        <label class="method-option">
+          <input type="radio" name="payment_method" value="international" onchange="togglePaymentForm()">
+          Tarjeta / PayPal (USD)
+        </label>
+        
+        <div class="pago-movil-form" id="pmForm" style="display:block;">
+          <p><strong>Datos para Pago Móvil:</strong></p>
+          <p>Banco: Banesco (0134)<br>CI: V-12345678<br>Telf: 0414-1234567</p>
+          <hr style="border: 0; border-top: 1px solid var(--c-dark); margin: 1rem 0;">
+          <div class="form-group">
+            <label>Nro. de Referencia</label>
+            <input type="text" id="pmReference" placeholder="Últimos 6 dígitos" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+          </div>
+          <div class="form-group" style="margin-top: 1rem;">
+            <label>Subir Comprobante de Pago <span style="color:var(--c-danger);">*</span></label>
+            <input type="file" id="pmReceipt" accept="image/*" style="background:var(--c-surface); color:var(--c-text); padding:0.5rem; border:1px solid var(--c-border); border-radius:4px; width:100%;">
+            <p style="font-size:0.75rem; color:var(--c-text-sec); margin-top:0.5rem;">Por seguridad, debes subir la captura de pantalla de la transferencia.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="form-group" style="margin-top: 1.5rem;">
+        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.85rem; color: var(--c-light);">
+          <input type="checkbox" id="termsCheckbox" style="width: auto; cursor: pointer;">
+          <span>He leído y acepto los <a href="politicas.html" target="_blank" style="color: var(--c-gold); text-decoration: underline;">Términos de Servicio y Políticas de Reembolso</a>.</span>
+        </label>
+      </div>
+
+      <button class="btn-submit" id="btnCheckout" onclick="processCheckout()">Confirmar Pago Móvil <span>&#10140;</span></button>
+      <div id="paypal-button-container" style="display: none; margin-top: 1rem;"></div>
+      
+      <div class="secure-badge">
+        <span>🔒</span> Pago con rapidez y seguridad
+      </div>
+
+      <p id="checkoutStatus" style="font-size: 0.85rem; margin-top: 1rem; text-align: center; color: var(--c-danger);"></p>
+    </div>
+  </main>
+
+  <script>
+    // Aquí pongo mi URL de Supabase para conectarme a la base de datos
+    const SUPABASE_URL = 'https://kynysaefypgugdvcfpzj.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5bnlzYWVmeXBndWdkdmNmcHpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5MTEwODgsImV4cCI6MjEwNDQ4NzA4OH0.GsC_nggMng_-5-3K2T1rApgctiyWcVXAeS7uw5H2ftU';
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    function escapeHTML(str) {
+      if (!str) return '';
+      return str.toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    let currentTotal = 0;
+    let exchangeRate = null;
+
+    async function fetchExchangeRate() {
+      try {
+        const res = await fetch('https://ve.dolarapi.com/v1/dolares/oficial', { signal: AbortSignal.timeout(5000) });
+        const data = await res.json();
+        exchangeRate = data.promedio;
+        if (window.renderCheckout) window.renderCheckout();
+      } catch (e) {
+        console.warn("Fallo al obtener BCV en vivo, usando caché...", e);
+        try {
+          const { data, error } = await supabaseClient.from('system_settings').select('value').eq('key', 'bcv_rate').single();
+          if (error) throw error;
+          exchangeRate = data.value.rate;
+          if (window.renderCheckout) window.renderCheckout();
+        } catch (dbError) {
+          console.error("Error al obtener tasa de caché:", dbError);
+          document.getElementById('totalBsLabel').textContent = "Error al calcular";
+        }
+      }
+    }
+
+    
+    window.renderCheckout = function() {
+      const cart = getCart();
+      const container = document.getElementById('cartContainer');
+      
+      if (cart.length === 0) {
+        container.innerHTML = '<p style="padding: 2rem 0; color: var(--c-mid);">Tu carrito está vacío.</p>';
+        document.getElementById('btnCheckout').disabled = true;
+        document.getElementById('subtotalLabel').textContent = '$0.00';
+        document.getElementById('totalLabel').textContent = '$0.00 USD';
+        document.getElementById('totalBsLabel').textContent = 'Bs 0.00';
+        document.querySelector('.checkout-panel').style.opacity = '0.4';
+        document.querySelector('.checkout-panel').style.pointerEvents = 'none';
+        currentTotal = 0;
+        return;
+      }
+
+      document.querySelector('.checkout-panel').style.opacity = '1';
+      document.querySelector('.checkout-panel').style.pointerEvents = 'auto';
+      document.getElementById('btnCheckout').disabled = false;
+      container.innerHTML = '';
+      currentTotal = 0;
+      let totalItems = 0;
+
+      cart.forEach((item, index) => {
+        let itemQty = parseInt(item.quantity) || 1;
+        totalItems += itemQty;
+        let itemTotal = item.price * itemQty;
+        currentTotal += itemTotal;
+        
+        let imgHtml = '';
+        if (item.type === 'custom') {
+          imgHtml = item.image_front ? `<img src="${item.image_front}" class="item-img">` : `<div class="item-img">👕</div>`;
+        } else {
+          imgHtml = item.image ? `<img src="${item.image}" class="item-img">` : `<div class="item-img">👕</div>`;
+        }
+
+        let metaData = '';
+        if (item.type === 'custom') {
+          metaData = `Overmark Custom<br>Style: 3D Config<br>Talla: ${item.size}`;
+        } else {
+          metaData = `Overmark Essential<br>Style: Standard`;
+        }
+
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          ${imgHtml}
+          <div class="item-details">
+            <div class="item-details-top">
+              <h3 class="item-name">${escapeHTML(item.name)}</h3>
+              <div class="item-price">$${itemTotal.toFixed(2)}</div>
+            </div>
+            
+            <div class="item-actions-row">
+              <div style="width: 100%;">
+                <p class="item-meta">${metaData}</p>
+                
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 1rem; flex-wrap: wrap; gap: 1rem;">
+                  
+                  <div style="display:flex; align-items:center; gap:0.5rem; background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 4px; padding: 0.1rem 0.5rem;">
+                    <button onclick="updateCartItemQuantity('${item.id}', ${item.quantity - 1})" style="background:none; border:none; color:var(--c-text); cursor:pointer; font-size:1.4rem; padding: 0 0.5rem;">-</button>
+                    <span style="font-weight:bold; min-width: 1.5rem; text-align:center; font-size: 1.1rem;">${item.quantity}</span>
+                    <button onclick="updateCartItemQuantity('${item.id}', ${item.quantity + 1})" style="background:none; border:none; color:var(--c-text); cursor:pointer; font-size:1.2rem; padding: 0 0.5rem;">+</button>
+                  </div>
+                  
+                  
+                  <div class="item-links" style="display: flex; gap: 1.5rem; align-items: center;">
+                    <button class="item-link" onclick="saveForLater('${item.id}')" style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--c-text-sec);" title="Mover a Favoritos" onmouseover="this.style.color='var(--c-primary)'" onmouseout="this.style.color='var(--c-text-sec)'">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                      Favoritos
+                    </button>
+                    <button class="item-link danger" onclick="removeFromCart('${item.id}')" style="color: var(--c-danger); display: flex; align-items: center; justify-content: center; padding: 0.2rem;" title="Eliminar del Carrito" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+      
+      document.getElementById('itemCountLabel').textContent = `${totalItems} PRODUCTO${totalItems > 1 ? 'S' : ''}`;
+
+      document.getElementById('subtotalLabel').textContent = `$${currentTotal.toFixed(2)}`;
+      document.getElementById('totalLabel').textContent = `$${currentTotal.toFixed(2)} USD`;
+      
+      const bsLabel = document.getElementById('totalBsLabel');
+      if (exchangeRate) {
+        bsLabel.textContent = `Bs ${(currentTotal * exchangeRate).toFixed(2)}`;
+      } else if (bsLabel.textContent !== "Error al calcular") {
+        bsLabel.textContent = "Calculando...";
+      }
+    };
+
+    async function saveForLater(itemId) {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        showToast("Por favor, inicia sesión para guardar productos", "error");
+        return;
+      }
+      
+      const cart = getCart();
+      const item = cart.find(i => i.id === itemId);
+      if (!item) return;
+
+      if (item.type === 'custom') {
+        const customData = { size: item.size, image_front: item.image_front, image_back: item.image_back, price: item.price, name: item.name };
+        await supabaseClient.from('favorites').insert([{ user_id: session.user.id, product_id: item.product_id || null, custom_data: customData }]);
+      } else {
+        await supabaseClient.from('favorites').insert([{ user_id: session.user.id, product_id: item.product_id }]);
+      }
+      
+      removeFromCart(itemId);
+      showToast("Guardado en Favoritos", "success");
+    }
+
+    function togglePaymentForm() {
+      const method = document.querySelector('input[name="payment_method"]:checked').value;
+      const pmForm = document.getElementById('pmForm');
+      
+      if (method === 'pago_movil') {
+        pmForm.style.display = 'block';
+        document.getElementById('btnCheckout').style.display = 'block';
+        document.getElementById('paypal-button-container').style.display = 'none';
+      } else {
+        pmForm.style.display = 'none';
+        document.getElementById('btnCheckout').style.display = 'none';
+        document.getElementById('paypal-button-container').style.display = 'block';
+      }
+    }
+
+    async function sendOrderNotification(orderId, amount, method, items, customerName, customerEmail) {
+      try {
+        let itemsList = items.map(i => `${i.quantity}x ${i.name}`).join(', ');
+        
+        await fetch("https://formsubmit.co/ajax/fabianvasquezp13@gmail.com", {
+          method: "POST",
+          headers: { 
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+              _subject: `Nuevo Pedido #${orderId} - OVERMARK`,
+              _replyto: customerEmail,
+              Pedido: `#${orderId}`,
+              Cliente: customerName,
+              Email: customerEmail,
+              Total: `$${amount.toFixed(2)} USD`,
+              Metodo_Pago: method,
+              Productos: itemsList,
+              _template: "table" 
+          })
+        });
+      } catch (e) {
+        console.error("No se pudo enviar la alerta de correo", e);
+      }
+    }
+
+    async function processCheckout() {
+      const termsAccepted = document.getElementById('termsCheckbox').checked;
+      if (!termsAccepted) {
+        document.getElementById('checkoutStatus').textContent = 'Debes aceptar los Términos y Políticas para continuar.';
+        return;
+      }
+
+      const cart = getCart();
+      if (cart.length === 0) return;
+
+      const method = document.querySelector('input[name="payment_method"]:checked').value;
+      const pmRef = document.getElementById('pmReference').value.trim();
+      const pmReceiptInput = document.getElementById('pmReceipt');
+
+      if (method === 'pago_movil') {
+        if (pmRef.length < 4 || !/^\d+$/.test(pmRef)) {
+          document.getElementById('checkoutStatus').textContent = 'Debes ingresar un número de referencia válido (solo números, mínimo 4 dígitos).';
+          return;
+        }
+        if (!pmReceiptInput.files || pmReceiptInput.files.length === 0) {
+          document.getElementById('checkoutStatus').textContent = 'Por favor, sube la captura de pantalla del comprobante de pago.';
+          return;
+        }
+      }
+
+      const btn = document.getElementById('btnCheckout');
+      btn.disabled = true;
+      btn.textContent = 'Procesando...';
+      document.getElementById('checkoutStatus').textContent = '';
+
+      try {
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        if (!user) throw new Error("Debes iniciar sesión para completar la compra.");
+
+        let receiptUrl = null;
+
+        
+        if (method === 'pago_movil') {
+          btn.textContent = 'Subiendo comprobante...';
+          const file = pmReceiptInput.files[0];
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${user.id}_${Date.now()}.${fileExt}`;
+          const filePath = `${fileName}`;
+
+          const { error: uploadError } = await supabaseClient.storage
+            .from('payment_receipts')
+            .upload(filePath, file);
+
+          if (uploadError) throw new Error("Error al subir comprobante: " + uploadError.message);
+
+          const { data: publicUrlData } = supabaseClient.storage
+            .from('payment_receipts')
+            .getPublicUrl(filePath);
+          
+          receiptUrl = publicUrlData.publicUrl;
+        }
+
+        btn.textContent = 'Registrando pedido...';
+
+        const { data, error } = await supabaseClient.rpc('create_order', {
+          p_items: cart,
+          p_payment_method: 'Pago Movil',
+          p_payment_reference: pmRef,
+          p_customer_name: user.user_metadata?.full_name || 'Desconocido',
+          p_customer_email: user.email,
+          p_payment_receipt_url: receiptUrl
+        });
+        
+        if (error) throw error;
+
+        
+        const customerName = user.user_metadata?.full_name || 'Desconocido';
+        sendOrderNotification(data.id, currentTotal, 'Pago Movil', cart, customerName, user.email);
+
+        clearCart();
+        showToast(`¡Pedido #${data.order_code} confirmado exitosamente!`, "success");
+        setTimeout(() => window.location.href = 'index.html', 2000);
+
+      } catch (err) {
+        console.error(err);
+        document.getElementById('checkoutStatus').textContent = err.message;
+        btn.disabled = false;
+        btn.textContent = 'Confirmar Pago Móvil';
+      }
+    }
+
+    async function handlePayPalSuccess(details) {
+      document.getElementById('checkoutStatus').textContent = 'Registrando pedido...';
+      try {
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        if (!user) throw new Error("Debes iniciar sesión para completar la compra.");
+
+        const { data, error } = await supabaseClient.rpc('create_order', {
+          p_items: getCart(),
+          p_payment_method: 'PayPal',
+          p_payment_reference: details.id,
+          p_customer_name: user.user_metadata?.full_name || 'Desconocido',
+          p_customer_email: user.email
+        });
+
+        if (error) throw error;
+
+        
+        const buyerName = details.payer?.name?.given_name || 'Cliente';
+        sendOrderNotification(data.id, currentTotal, 'PayPal', getCart(), buyerName, user.email);
+
+        clearCart();
+        showToast(`¡Gracias ${escapeHTML(buyerName)}! Pedido #${data.order_code} pagado.`, "success");
+        setTimeout(() => window.location.href = 'index.html', 2000);
+
+      } catch (err) {
+        console.error(err);
+        document.getElementById('checkoutStatus').textContent = "Error guardando el pedido: " + err.message;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderCheckout();
+      fetchExchangeRate();
+
+      
+      paypal.Buttons({
+        createOrder: function(data, actions) {
+          if (currentTotal <= 0) {
+            showToast("Tu carrito está vacío", "error");
+            return;
+          }
+          return actions.order.create({
+            purchase_units: [{
+              amount: { value: currentTotal.toFixed(2) }
+            }]
+          });
+        },
+        onApprove: function(data, actions) {
+          return actions.order.capture().then(function(details) {
+            handlePayPalSuccess(details);
+          });
+        },
+        onError: function(err) {
+          console.error(err);
+          document.getElementById('checkoutStatus').textContent = "Ocurrió un error al cargar PayPal.";
+        }
+      }).render('#paypal-button-container');
+    });
+  </script>
+<script src="toast.js?v=3"></script>`n</body>
+</html>
+
+
+

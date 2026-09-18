@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <!-- Configuración de metadatos y fuentes que incluí para el estilo visual -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Políticas de la Tienda - OVERMARK</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --c-bg: #121212;
+      --c-surface: #1E1E1E;
+      --c-surface-hover: #2A2A2A;
+      --c-text: #E0E0E0;
+      --c-text-sec: #9E9E9E;
+      --c-primary: #C8A96E; 
+      --c-primary-hover: #A68A56;
+      --c-dark: #000000;
+      --c-border: #333333;
+      --c-danger: #C0392B;
+      --ff-display: 'Cinzel', serif;
+      --ff-ui: 'Inter', sans-serif;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      background-color: var(--c-bg);
+      color: var(--c-text);
+      font-family: var(--ff-ui);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    nav {
+      background: rgba(18,18,18,0.95);
+      backdrop-filter: blur(10px);
+      position: sticky; top: 0; z-index: 100;
+      border-bottom: 1px solid var(--c-border);
+      padding: 1rem 5%;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    
+    nav .brand {
+      font-family: var(--ff-display); font-size: 1.8rem;
+      font-weight: 700; color: var(--c-primary);
+      text-decoration: none; letter-spacing: 0.1em;
+    }
+    
+    nav .nav-links a {
+      color: var(--c-text); text-decoration: none; margin-left: 2rem;
+      font-size: 0.9rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.05em; transition: color 0.3s;
+    }
+    nav .nav-links a:hover { color: var(--c-primary); }
+
+    main {
+      flex: 1;
+      width: 100%; max-width: 800px;
+      margin: 3rem auto;
+      padding: 0 2rem;
+    }
+
+    h1 {
+      font-family: var(--ff-display);
+      color: var(--c-primary);
+      margin-bottom: 2rem;
+      text-align: center;
+      font-size: 2.5rem;
+    }
+
+    .policy-section {
+      background: var(--c-surface);
+      padding: 2rem;
+      border-radius: 8px;
+      border: 1px solid var(--c-border);
+      margin-bottom: 2rem;
+    }
+
+    .policy-section h2 {
+      font-family: var(--ff-display);
+      color: var(--c-text);
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--c-border);
+      padding-bottom: 0.5rem;
+    }
+
+    .policy-section p {
+      color: var(--c-text-sec);
+      margin-bottom: 1rem;
+      text-align: justify;
+    }
+
+    .policy-section ul {
+      color: var(--c-text-sec);
+      margin-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .policy-section li {
+      margin-bottom: 0.5rem;
+    }
+
+    footer {
+      background: var(--c-dark);
+      border-top: 1px solid var(--c-border);
+      padding: 3rem 5% 1.5rem;
+      text-align: center;
+    }
+
+    footer p {
+      color: var(--c-text-sec);
+      font-size: 0.9rem;
+      margin-top: 2rem;
+    }
+
+    .footer-links a {
+      color: var(--c-primary);
+      text-decoration: none;
+      margin: 0 1rem;
+      font-size: 0.9rem;
+    }
+    .footer-links a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <!-- Barra de navegación principal que diseñé -->
+<nav>
+    <a href="index.html" class="brand">OVERMARK</a>
+    <div class="nav-links" id="navMenu">
+      <a href="index.html">Catálogo</a>
+      <a href="checkout.html">Carrito</a>
+    </div>
+  </nav>
+
+  <main>
+    <h1>Políticas de la Tienda</h1>
+
+    <div class="policy-section">
+      <h2>1. Envíos y Responsabilidad</h2>
+      <p>Cada prenda OVERMARK es sometida a un estricto control de calidad y fotografiada antes de su despacho. Entendemos que el transporte externo puede tener imprevistos (retrasos o daños por parte de la agencia de envíos). Aunque no tenemos control directo sobre los paquetes una vez entregados a la agencia, nuestro equipo de soporte te acompañará y te proporcionará toda la documentación visual y técnica necesaria para que puedas gestionar tu reclamo de manera exitosa.</p>
+    </div>
+
+    <div class="policy-section">
+      <h2>2. Política de Reembolsos y Devoluciones</h2>
+      <p>Al operar bajo un modelo de personalización y producción bajo demanda (Print on Demand), cada prenda es creada exclusivamente para ti. Por esta razón, no podemos procesar devoluciones por errores de selección de talla, color o diseño por parte del usuario.</p>
+      <p>Excepciones exclusivas para reembolso o reemplazo:</p>
+      <ul>
+        <li><strong>Defectos de fabricación:</strong> Fallas evidentes en la confección o en la calidad de la impresión.</li>
+        <li><strong>Error de logística:</strong> Recepción de un producto o talla distinta a la de su orden original.</li>
+      </ul>
+      <p>Tienes un plazo de 72 horas desde la recepción del paquete para reportar cualquier anomalía desde tu panel de usuario, adjuntando fotografías claras del inconveniente.</p>
+    </div>
+
+    <div class="policy-section">
+      <h2>3. Disponibilidad y Pagos</h2>
+      <p>Para garantizar la exclusividad y agilizar la producción, los pedidos mediante Pago Móvil o transferencia bancaria requieren confirmación. Si el pago no es reportado y verificado en un lapso de 24 horas, la orden se cancelará automáticamente para liberar el inventario. Los pagos realizados mediante PayPal se procesan y aprueban de forma inmediata.</p>
+    </div>
+
+    <div class="policy-section">
+      <h2>4. Propiedad Intelectual y Diseños Personalizados</h2>
+      <p>Al utilizar nuestro personalizador 3D y subir imágenes a la plataforma, el usuario declara y garantiza que posee los derechos comerciales o legales sobre dichos diseños. OVERMARK actúa únicamente como un servicio de impresión bajo demanda y se deslinda de cualquier responsabilidad legal por infracciones de derechos de autor o propiedad intelectual cometidas por los usuarios.</p>
+    </div>
+  </main>
+
+  <!-- Pie de página con mis enlaces de redes sociales y legales -->
+<footer>
+    <div class="footer-links">
+      <a href="index.html">Volver a la tienda</a>
+      <a href="politicas.html">Términos y Políticas</a>
+    </div>
+    <p>&copy; 2026 OVERMARK. Todos los derechos reservados.</p>
+  </footer>
+
+</body>
+</html>

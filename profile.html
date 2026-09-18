@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <!-- Configuración de metadatos y fuentes que incluí para el estilo visual -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Cuenta - OVERMARK Studio</title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <!-- SDK de Supabase que importé para conectar mi backend -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="cart.js?v=3"></script>
+
+  <style>
+    :root {
+      --c-black: #0A0A0A;
+      --c-carbon: #1E1E1E;
+      --c-dark: #2A2A2A;
+      --c-mid: #6B6B6B;
+      --c-light: #BEBEBE;
+      --c-cream: #F5F5F0;
+      --c-gold: #C8A96E;
+      --c-danger: #C0392B;
+
+      --ff-display: 'Playfair Display', Georgia, serif;
+      --ff-ui: 'Inter', system-ui, sans-serif;
+      --transition: 0.3s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--ff-ui);
+      background: var(--c-black);
+      color: var(--c-cream);
+      line-height: 1.6;
+      padding-bottom: 4rem;
+    }
+
+    header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--c-dark);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--c-black);
+    }
+
+    .brand {
+      font-family: var(--ff-display);
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--c-cream);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+    }
+
+    .brand span {
+      color: var(--c-gold);
+    }
+
+    .nav-link {
+      color: var(--c-mid);
+      text-decoration: none;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      transition: color 0.3s ease;
+      cursor: pointer;
+    }
+
+    .nav-link:hover {
+      color: var(--c-cream);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 3rem auto;
+      padding: 0 2rem;
+    }
+
+    h1 {
+      font-family: var(--ff-display);
+      font-size: 2.5rem;
+      color: var(--c-cream);
+      margin-bottom: 2rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+
+    .tabs {
+      display: flex;
+      gap: 2rem;
+      border-bottom: 1px solid var(--c-dark);
+      margin-bottom: 2rem;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      color: var(--c-mid);
+      font-size: 1rem;
+      padding: 0.5rem 0;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: color var(--transition);
+      border-bottom: 2px solid transparent;
+    }
+
+    .tab-btn:hover {
+      color: var(--c-cream);
+    }
+
+    .tab-btn.active {
+      color: var(--c-gold);
+      border-color: var(--c-gold);
+      font-weight: 600;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 2rem;
+      max-width: 900px;
+      align-items: start;
+    }
+
+    .profile-info-display {
+      background: var(--c-carbon);
+      border: 1px solid var(--c-dark);
+      border-radius: 8px;
+      padding: 2rem;
+    }
+
+    .display-group {
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--c-dark);
+      padding-bottom: 1rem;
+    }
+
+    .display-group:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .display-label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--c-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.3rem;
+    }
+
+    .display-value {
+      color: var(--c-cream);
+      font-size: 1.05rem;
+      line-height: 1.4;
+    }
+
+
+    .profile-card {
+      background: var(--c-carbon);
+      border: 1px solid var(--c-dark);
+      border-radius: 8px;
+      padding: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--c-mid);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      background: var(--c-black);
+      border: 1px solid var(--c-dark);
+      color: var(--c-cream);
+      padding: 0.8rem;
+      border-radius: 4px;
+      font-family: var(--ff-ui);
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--c-gold);
+    }
+
+    .btn-submit {
+      background: var(--c-gold);
+      color: var(--c-black);
+      border: none;
+      padding: 0.8rem 2rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: opacity 0.3s;
+    }
+
+    .btn-submit:hover {
+      opacity: 0.9;
+    }
+
+
+    .order-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .order-card {
+      background: var(--c-carbon);
+      border: 1px solid var(--c-dark);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .order-header {
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .order-header:hover {
+      background: #252525;
+    }
+
+    .order-info h3 {
+      font-family: var(--ff-ui);
+      font-size: 1.1rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .order-meta {
+      color: var(--c-mid);
+      font-size: 0.85rem;
+    }
+
+    .order-status {
+      display: inline-block;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      background: var(--c-dark);
+      color: var(--c-cream);
+    }
+
+    .order-details {
+      display: none;
+      border-top: 1px solid var(--c-dark);
+      padding: 1.5rem;
+      background: #181818;
+    }
+
+    .order-item-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px dashed var(--c-dark);
+      padding-bottom: 1rem;
+    }
+
+    .order-item-row:last-child {
+      margin-bottom: 0;
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .order-item-img {
+      width: 50px;
+      height: 50px;
+      background: #0A0A0A;
+      border-radius: 4px;
+      object-fit: cover;
+    }
+
+    .order-item-info {
+      flex-grow: 1;
+    }
+
+    .order-item-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--c-cream);
+      margin-bottom: 0.2rem;
+    }
+
+    .order-item-meta {
+      font-size: 0.8rem;
+      color: var(--c-mid);
+    }
+
+    .order-item-price {
+      font-weight: 600;
+      color: var(--c-gold);
+    }
+
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+
+    .product-card {
+      background: var(--c-carbon);
+      border: 1px solid var(--c-dark);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-img {
+      height: 250px;
+      background: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .product-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .product-info {
+      padding: 1.5rem;
+    }
+
+    .product-name {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--c-cream);
+    }
+
+    .btn-remove-fav {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(10, 10, 10, 0.8);
+      color: var(--c-danger);
+      border: 1px solid var(--c-dark);
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn-remove-fav:hover {
+      border-color: var(--c-danger);
+      background: var(--c-danger);
+      color: white;
+    }
+
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background-color: var(--c-carbon);
+      border: 1px solid var(--c-dark);
+      border-radius: 8px;
+      padding: 2rem;
+      width: 90%;
+      max-width: 500px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-title {
+      font-family: var(--ff-display);
+      font-size: 1.5rem;
+      color: var(--c-danger);
+    }
+
+    .close-btn {
+      color: var(--c-mid);
+      font-size: 1.5rem;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+    }
+
+    .close-btn:hover {
+      color: var(--c-cream);
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <a href="index.html" class="brand">OVER<span>MARK</span></a>
+    <div>
+      <a href="index.html" class="nav-link" style="margin-right: 2rem;">Inicio</a>
+      <a onclick="logout()" class="nav-link">Cerrar Sesión</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1>Mi Cuenta</h1>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('profile')">Perfil</button>
+      <button class="tab-btn" onclick="showTab('orders')">Mis Pedidos</button>
+      <button class="tab-btn" onclick="showTab('favorites')">Favoritos</button>
+    </div>
+
+
+    <div id="tab-profile" class="tab-content active">
+      <div class="profile-grid">
+
+
+        <div class="profile-info-display">
+          <h2 style="font-family:var(--ff-display); font-size:1.5rem; margin-bottom:1.5rem; color:var(--c-gold);">Tus
+            Datos Actuales</h2>
+          <div class="display-group">
+            <span class="display-label">Nombre Completo</span>
+            <p id="displayName" class="display-value">-</p>
+          </div>
+          <div class="display-group">
+            <span class="display-label">Teléfono</span>
+            <p id="displayPhone" class="display-value">-</p>
+          </div>
+          <div class="display-group">
+            <span class="display-label">Dirección de Envío</span>
+            <p id="displayAddress" class="display-value">-</p>
+          </div>
+        </div>
+
+
+        <div class="profile-card">
+          <h2 style="font-family:var(--ff-display); font-size:1.5rem; margin-bottom:1.5rem;">Actualizar Datos</h2>
+          <div class="form-group">
+            <label>Nombre Completo</label>
+            <input type="text" id="profName" placeholder="Tu nombre">
+          </div>
+          <div class="form-group">
+            <label>Teléfono</label>
+            <div style="display: flex; gap: 0.5rem;">
+              <select id="profPhoneCode" style="width: 130px; cursor: pointer;">
+                <option value="+58" selected>🇻🇪 +58</option>
+                <option value="+1">🇺🇸/🇨🇦 +1</option>
+                <option value="+52">🇲🇽 +52</option>
+                <option value="+57">🇨🇴 +57</option>
+                <option value="+54">🇦🇷 +54</option>
+                <option value="+56">🇨🇱 +56</option>
+                <option value="+51">🇵🇪 +51</option>
+                <option value="+593">🇪🇨 +593</option>
+                <option value="+598">🇺🇾 +598</option>
+                <option value="+595">🇵🇾 +595</option>
+                <option value="+591">🇧🇴 +591</option>
+                <option value="+55">🇧🇷 +55</option>
+                <option value="+507">🇵🇦 +507</option>
+                <option value="+506">🇨🇷 +506</option>
+                <option value="+503">🇸🇻 +503</option>
+                <option value="+504">🇭🇳 +504</option>
+                <option value="+502">🇬🇹 +502</option>
+                <option value="+505">🇳🇮 +505</option>
+                <option value="+34">🇪🇸 +34</option>
+
+                <option value="+44">🇬🇧 +44</option>
+                <option value="+49">🇩🇪 +49</option>
+                <option value="+33">🇫🇷 +33</option>
+                <option value="+39">🇮🇹 +39</option>
+                <option value="+81">🇯🇵 +81</option>
+                <option value="+86">🇨🇳 +86</option>
+                <option value="+91">🇮🇳 +91</option>
+              </select>
+              <input type="tel" id="profPhone" placeholder="412 1234567" style="flex: 1;">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Dirección de Envío</label>
+            <textarea id="profAddress" rows="3" placeholder="Av. Principal, Edificio..."></textarea>
+          </div>
+          <button class="btn-submit" onclick="saveProfile()">Guardar Cambios</button>
+          <p id="profStatus" style="margin-top: 1rem; font-size: 0.85rem; color: var(--c-gold);"></p>
+        </div>
+        
+        <div class="profile-card" style="margin-top: 2rem;">
+          <h2 style="font-family:var(--ff-display); font-size:1.5rem; margin-bottom:1.5rem;">Cambiar Contraseña</h2>
+          <div class="form-group">
+            <label>Nueva Contraseña</label>
+            <input type="password" id="newPassword" placeholder="••••••••">
+          </div>
+          <div class="form-group">
+            <label>Confirmar Contraseña</label>
+            <input type="password" id="confirmNewPassword" placeholder="••••••••">
+          </div>
+          <button class="btn-submit" style="background: var(--c-dark); color: var(--c-cream);" onclick="changePassword()">Actualizar Contraseña</button>
+          <p id="pwdStatus" style="margin-top: 1rem; font-size: 0.85rem;"></p>
+        </div>
+
+      </div>
+    </div>
+
+
+    <div id="tab-orders" class="tab-content">
+      <div class="order-list" id="ordersContainer">
+        <p style="color: var(--c-mid);">Cargando pedidos...</p>
+      </div>
+    </div>
+
+
+    <div id="tab-favorites" class="tab-content">
+      <div class="product-grid" id="favoritesContainer">
+        <p style="color: var(--c-mid);">Cargando favoritos...</p>
+      </div>
+    </div>
+
+
+    <div id="refundModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Solicitar Reembolso</h2>
+          <button class="close-btn" onclick="closeRefundModal()">&times;</button>
+        </div>
+        <div class="form-group">
+          <label>Motivo del Reembolso</label>
+          <textarea id="refundReason" rows="3"
+            placeholder="Por favor, explica detalladamente por qué solicitas el reembolso..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Imagen de Prueba (Obligatorio)</label>
+          <input type="file" id="refundProofImage" accept="image/*" required
+            style="padding: 0.5rem; background: var(--c-black);">
+          <small style="color: var(--c-mid); font-size: 0.75rem; display: block; margin-top: 0.5rem;">Sube una foto que
+            evidencie el problema.</small>
+        </div>
+        <button id="submitRefundBtn" class="btn-submit" style="width: 100%; background: var(--c-danger); color: white;"
+          onclick="submitRefund()">Enviar Solicitud</button>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // Aquí pongo mi URL de Supabase para conectarme a la base de datos
+    const SUPABASE_URL = 'https://kynysaefypgugdvcfpzj.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5bnlzYWVmeXBndWdkdmNmcHpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5MTEwODgsImV4cCI6MjEwNDQ4NzA4OH0.GsC_nggMng_-5-3K2T1rApgctiyWcVXAeS7uw5H2ftU';
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let currentUser = null;
+
+    function escapeHTML(str) {
+      if (!str) return '';
+      return str.toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    async function sendRefundNotification(orderId, reason, customerEmail) {
+      try {
+        await fetch("https://formsubmit.co/ajax/fabianvasquezp13@gmail.com", {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            _subject: `Solicitud de Reembolso - Pedido #${orderId}`,
+            _replyto: customerEmail,
+            Alerta: "Un cliente ha solicitado un reembolso.",
+            Pedido: `#${orderId}`,
+            Email_Cliente: customerEmail,
+            Motivo: reason,
+            _template: "table"
+          })
+        });
+      } catch (e) {
+        console.error("No se pudo enviar la alerta de correo", e);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        window.location.href = 'index.html';
+        return;
+      }
+      currentUser = session.user;
+
+      loadProfileData();
+      loadOrders();
+      loadFavorites();
+    });
+
+    function showTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+      event.target.classList.add('active');
+      document.getElementById('tab-' + tabName).classList.add('active');
+    }
+
+    async function loadProfileData() {
+      const { data, error } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single();
+
+      const nameVal = data?.full_name || currentUser.user_metadata?.full_name || '';
+      const phoneVal = data?.phone || '';
+      const addrVal = data?.address || '';
+
+
+      document.getElementById('displayName').textContent = nameVal || 'No configurado';
+      document.getElementById('displayPhone').textContent = phoneVal || 'No configurado';
+      document.getElementById('displayAddress').textContent = addrVal || 'No configurado';
+    }
+
+    async function saveProfile() {
+
+      const currentName = document.getElementById('displayName').textContent;
+      const nameInput = document.getElementById('profName').value.trim();
+      const name = nameInput !== '' ? nameInput : (currentName !== 'No configurado' ? currentName : '');
+
+      const currentPhone = document.getElementById('displayPhone').textContent;
+      const phoneCode = document.getElementById('profPhoneCode').value;
+      const phoneNumber = document.getElementById('profPhone').value.trim();
+      const phone = phoneNumber !== '' ? `${phoneCode} ${phoneNumber}` : (currentPhone !== 'No configurado' ? currentPhone : '');
+
+      const currentAddr = document.getElementById('displayAddress').textContent;
+      const addrInput = document.getElementById('profAddress').value.trim();
+      const address = addrInput !== '' ? addrInput : (currentAddr !== 'No configurado' ? currentAddr : '');
+
+      const status = document.getElementById('profStatus');
+
+      if (!name) { status.textContent = "El nombre es obligatorio."; return; }
+      if (!phone || phone.length < 10) { status.textContent = "El teléfono debe tener un formato válido."; return; }
+      if (!address || address.length < 5) { status.textContent = "La dirección es obligatoria."; return; }
+
+      const { error } = await supabaseClient.from('profiles').upsert({
+        id: currentUser.id,
+        full_name: name,
+        phone: phone,
+        address: address
+      });
+
+      if (error) {
+        status.textContent = "Error guardando datos: " + error.message;
+        status.style.color = "var(--c-danger)";
+      } else {
+        status.textContent = 'Perfil actualizado exitosamente.';
+        status.style.color = 'var(--c-gold)';
+
+
+        document.getElementById('profName').value = '';
+        document.getElementById('profPhone').value = '';
+        document.getElementById('profAddress').value = '';
+
+        loadProfileData();
+        setTimeout(() => status.textContent = '', 3000);
+      }
+    }
+
+    // Agregué esta función para que el usuario pueda cambiar su contraseña desde su perfil
+    async function changePassword() {
+      const pwd = document.getElementById('newPassword').value;
+      const conf = document.getElementById('confirmNewPassword').value;
+      const status = document.getElementById('pwdStatus');
+
+      if (!pwd) { status.textContent = "Ingresa una contraseña nueva."; status.style.color = "var(--c-danger)"; return; }
+      if (pwd !== conf) { status.textContent = "Las contraseñas no coinciden."; status.style.color = "var(--c-danger)"; return; }
+      if (pwd.length < 6) { status.textContent = "La contraseña debe tener al menos 6 caracteres."; status.style.color = "var(--c-danger)"; return; }
+
+      status.textContent = "Actualizando...";
+      status.style.color = "var(--c-mid)";
+
+      const { data, error } = await supabaseClient.auth.updateUser({
+        password: pwd
+      });
+
+      if (error) {
+        status.textContent = "Error: " + error.message;
+        status.style.color = "var(--c-danger)";
+      } else {
+        status.textContent = "¡Contraseña actualizada exitosamente!";
+        status.style.color = "var(--c-gold)";
+        document.getElementById('newPassword').value = '';
+        document.getElementById('confirmNewPassword').value = '';
+        setTimeout(() => status.textContent = '', 3000);
+      }
+    }
+
+    async function loadOrders() {
+      const container = document.getElementById('ordersContainer');
+      const { data, error } = await supabaseClient.from('orders').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
+
+      if (error || !data || data.length === 0) {
+        container.innerHTML = '<p style="color: var(--c-mid);">No has realizado ningún pedido aún.</p>';
+        return;
+      }
+
+      container.innerHTML = '';
+      data.forEach(o => {
+        const date = new Date(o.created_at).toLocaleDateString('es-ES');
+        let statusText = o.status;
+        let statusColor = 'var(--c-mid)';
+
+        if (o.status === 'pending') { statusText = 'Pendiente'; statusColor = '#F39C12'; }
+        if (o.status === 'processing') { statusText = 'Procesando'; statusColor = '#3498DB'; }
+        if (o.status === 'shipped') { statusText = 'Enviado'; statusColor = '#9B59B6'; }
+        if (o.status === 'completed') { statusText = 'Completado'; statusColor = '#27AE60'; }
+        if (o.status === 'cancelled') { statusText = 'Cancelado'; statusColor = '#C0392B'; }
+        if (o.status === 'refunded') { statusText = 'Reembolsado'; statusColor = '#999999'; }
+
+        let itemsHtml = o.items.map(item => {
+          let qty = item.quantity || 1;
+          let price = item.price || 0;
+          let img = (item.type === 'custom' && item.image_front) ? item.image_front : (item.image ? item.image : '');
+          let imgTag = img ? `<img src="${escapeHTML(img)}" class="order-item-img">` : `<div class="order-item-img" style="display:flex; align-items:center; justify-content:center;">👕</div>`;
+          let meta = item.type === 'custom' ? `Talla: ${escapeHTML(item.size)} • 3D Custom` : 'Standard';
+          return `
+            <div class="order-item-row">
+              ${imgTag}
+              <div class="order-item-info">
+                <div class="order-item-title">${escapeHTML(item.name || 'Producto')}</div>
+                <div class="order-item-meta">${meta} • Cantidad: ${qty}</div>
+              </div>
+              <div class="order-item-price">$${(price * qty).toFixed(2)}</div>
+            </div>
+          `;
+        }).join('');
+
+        let refundBtnHtml = '';
+        if (o.status !== 'cancelled' && o.status !== 'refunded') {
+          if (o.refund_requested) {
+            refundBtnHtml = `<button disabled style="margin-top: 1.5rem; width: 100%; padding: 0.8rem; border-radius: 4px; border: 1px solid var(--c-dark); background: transparent; color: var(--c-mid); cursor: not-allowed; text-transform: uppercase; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em;">Reembolso Solicitado</button>`;
+          } else if (o.refund_reason === 'RECHAZADO') {
+            refundBtnHtml = `<button disabled style="margin-top: 1.5rem; width: 100%; padding: 0.8rem; border-radius: 4px; border: 1px solid var(--c-danger); background: transparent; color: var(--c-danger); cursor: not-allowed; text-transform: uppercase; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em; opacity: 0.5;">Reembolso Denegado</button>`;
+          } else {
+            refundBtnHtml = `<button id="btnRefund-${o.id}" onclick="requestRefund(${o.id})" style="margin-top: 1.5rem; width: 100%; padding: 0.8rem; border-radius: 4px; border: 1px solid var(--c-danger); background: rgba(192, 57, 43, 0.1); color: var(--c-danger); cursor: pointer; text-transform: uppercase; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em; transition: 0.3s;" onmouseover="this.style.background='var(--c-danger)'; this.style.color='#fff'" onmouseout="this.style.background='rgba(192, 57, 43, 0.1)'; this.style.color='var(--c-danger)'">Solicitar Reembolso</button>`;
+          }
+        }
+
+        let shippingProofHtml = '';
+        if (o.shipping_proof_url) {
+          shippingProofHtml = `<button onclick="viewShippingProof('${o.shipping_proof_url}')" style="display: block; margin-top: 1rem; width: 100%; text-align: center; padding: 0.8rem; border-radius: 4px; border: 1px solid var(--c-primary); background: rgba(0, 255, 170, 0.1); color: var(--c-primary); cursor: pointer; text-transform: uppercase; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em; transition: 0.3s;" onmouseover="this.style.background='var(--c-primary)'; this.style.color='#fff'" onmouseout="this.style.background='rgba(0, 255, 170, 0.1)'; this.style.color='var(--c-primary)'">📷 Ver Foto del Envío</button>`;
+        }
+
+        container.innerHTML += `
+            <div class="order-card">
+              <div class="order-header" onclick="toggleOrderDetails(${o.id})">
+                <div class="order-info">
+                  <h3>Pedido #${o.order_code || o.id}</h3>
+                  <p class="order-meta">${date} • ${o.items.length} artículos</p>
+                </div>
+                <div style="text-align: right; display: flex; align-items: center; gap: 1rem;">
+                  <div>
+                    <p style="font-weight: 600; color: var(--c-cream); margin-bottom: 0.5rem; text-align: right;">$${o.total_amount}</p>
+                    <span class="order-status" style="background: ${statusColor}33; color: ${statusColor}; border: 1px solid ${statusColor};">${statusText}</span>
+                  </div>
+                  <span style="color: var(--c-mid); font-size: 1.2rem;">▼</span>
+                </div>
+              </div>
+              <div class="order-details" id="order-details-${o.id}">
+                <p style="font-size: 0.85rem; color: var(--c-mid); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.05em;">Contenido del Pedido</p>
+                ${itemsHtml}
+                ${shippingProofHtml}
+                ${refundBtnHtml}
+              </div>
+            </div>
+          `;
+      });
+    }
+
+    window.viewShippingProof = async function (publicUrl) {
+      if (!publicUrl) return;
+      try {
+        const parts = publicUrl.split('/shipping_proofs/');
+        const path = parts.length > 1 ? parts[1] : publicUrl;
+        const { data, error } = await supabaseClient.storage.from('shipping_proofs').createSignedUrl(path, 3600);
+        if (error) throw error;
+        if (data && data.signedUrl) {
+          window.open(data.signedUrl, '_blank');
+        }
+      } catch (err) {
+        alert('No se pudo cargar la foto del envío. Asegúrate de tener permisos o contacta soporte.');
+        console.error(err);
+      }
+    };
+
+    let currentRefundOrderId = null;
+
+    window.requestRefund = function (orderId) {
+      currentRefundOrderId = orderId;
+      document.getElementById('refundReason').value = '';
+      document.getElementById('refundProofImage').value = '';
+      document.getElementById('refundModal').style.display = 'flex';
+    };
+
+    window.closeRefundModal = function () {
+      document.getElementById('refundModal').style.display = 'none';
+      currentRefundOrderId = null;
+    };
+
+    window.submitRefund = async function () {
+      if (!currentRefundOrderId) return;
+
+      const reason = document.getElementById('refundReason').value.trim();
+      const fileInput = document.getElementById('refundProofImage');
+      const file = fileInput.files[0];
+
+      if (!reason) {
+        showToast("Por favor, ingresa el motivo del reembolso.", "error");
+        return;
+      }
+      if (!file) {
+        showToast("Por favor, sube una imagen de prueba.", "error");
+        return;
+      }
+
+      const btnSubmit = document.getElementById('submitRefundBtn');
+      const originalBtnText = btnSubmit.textContent;
+      btnSubmit.textContent = 'Procesando...';
+      btnSubmit.disabled = true;
+
+      try {
+
+        const fileExt = file.name.split('.').pop();
+        const fileName = `refund_${currentRefundOrderId}_${Date.now()}.${fileExt}`;
+
+        const { error: uploadError } = await supabaseClient
+          .storage
+          .from('payment_receipts')
+          .upload(fileName, file);
+
+        if (uploadError) throw uploadError;
+
+        const { data: publicUrlData } = supabaseClient
+          .storage
+          .from('payment_receipts')
+          .getPublicUrl(fileName);
+
+        const proofUrl = publicUrlData.publicUrl;
+
+        const { error: updateError } = await supabaseClient.rpc('request_refund', {
+          p_order_id: currentRefundOrderId,
+          p_reason: reason,
+          p_proof_url: proofUrl
+        });
+
+        if (updateError) throw updateError;
+
+
+        sendRefundNotification(currentRefundOrderId, reason, currentUser.email);
+
+        showToast("Tu solicitud de reembolso ha sido enviada. Nos pondremos en contacto pronto.");
+
+
+        const btn = document.getElementById(`btnRefund-${currentRefundOrderId}`);
+        if (btn) {
+          btn.textContent = 'Reembolso Solicitado';
+          btn.style.background = 'transparent';
+          btn.style.borderColor = 'var(--c-dark)';
+          btn.style.color = 'var(--c-mid)';
+          btn.style.cursor = 'not-allowed';
+          btn.onmouseover = null;
+          btn.onmouseout = null;
+          btn.onclick = null;
+        }
+
+        closeRefundModal();
+
+      } catch (error) {
+        console.error(error);
+        showToast("Hubo un error al procesar tu solicitud. Intenta de nuevo.", "error");
+      } finally {
+        btnSubmit.textContent = originalBtnText;
+        btnSubmit.disabled = false;
+      }
+    };
+
+    function toggleOrderDetails(orderId) {
+      const details = document.getElementById(`order-details-${orderId}`);
+      if (details.style.display === 'block') {
+        details.style.display = 'none';
+      } else {
+        details.style.display = 'block';
+      }
+    }
+
+    async function loadFavorites() {
+      const container = document.getElementById('favoritesContainer');
+
+
+      const { data, error } = await supabaseClient
+        .from('favorites')
+        .select('*, products(*)')
+        .eq('user_id', currentUser.id)
+        .order('created_at', { ascending: false });
+
+      if (error || !data || data.length === 0) {
+        container.innerHTML = '<p style="color: var(--c-mid);">No tienes productos guardados en favoritos.</p>';
+        return;
+      }
+
+      container.innerHTML = '';
+      data.forEach(fav => {
+        if (!fav.products) return;
+        const p = fav.products;
+
+        let imgHtml = p.image_url
+          ? `<img src="${p.image_url}">`
+          : `<span style="font-size: 3rem;">👕</span>`;
+
+        container.innerHTML += `
+          <div class="product-card" id="fav-${fav.product_id}">
+            <button class="btn-remove-fav" onclick="removeFavorite(${fav.product_id})" title="Eliminar de favoritos">✖</button>
+            <div class="product-img">
+              ${imgHtml}
+            </div>
+            <div class="product-info">
+              <h3 class="product-name">${p.name}</h3>
+              <p style="color: var(--c-gold); font-weight: 600;">$${p.price}</p>
+              <a href="index.html" style="display:inline-block; margin-top:1rem; color:var(--c-cream); font-size:0.8rem; text-decoration:underline;">Ver en Catálogo</a>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    async function removeFavorite(productId) {
+      const { error } = await supabaseClient.from('favorites').delete().match({ user_id: currentUser.id, product_id: productId });
+      if (!error) {
+        const card = document.getElementById(`fav-${productId}`);
+        if (card) card.remove();
+
+        const container = document.getElementById('favoritesContainer');
+        if (container.children.length === 0) {
+          container.innerHTML = '<p style="color: var(--c-mid);">No tienes productos guardados en favoritos.</p>';
+        }
+      }
+    }
+
+    // Para cerrar la sesión de forma segura y borrar el token local
+    async function logout() {
+      await supabaseClient.auth.signOut();
+      window.location.href = 'index.html';
+    }
+  </script>
+  <script src="toast.js?v=3"></script>
+</body>
+
+</html>

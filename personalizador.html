@@ -1,0 +1,1874 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <!-- Configuración de metadatos y fuentes que incluí para el estilo visual -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Personalizador — OVERMARK Studio</title>
+
+  
+  
+
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+
+  
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+
+  
+  <!-- SDK de Supabase que importé para conectar mi backend -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  
+  <script src="cart.js?v=3"></script>
+
+  <style>
+    
+    :root {
+      --c-black: #0A0A0A;
+      --c-carbon: #1E1E1E;
+      --c-dark: #2A2A2A;
+      --c-mid: #6B6B6B;
+      --c-light: #BEBEBE;
+      --c-cream: #F5F5F0;
+      --c-white: #FFFFFF;
+      --c-gold: #C8A96E;
+      --c-gold-d: #A8895A;
+      --c-danger: #C0392B;
+      --c-success: #27AE60;
+
+      --ff-display: 'Playfair Display', Georgia, serif;
+      --ff-ui: 'Inter', system-ui, sans-serif;
+
+      --radius-sm: 4px;
+      --radius-md: 10px;
+      --radius-lg: 20px;
+
+      --transition: 0.25s ease;
+    }
+
+    
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-content {
+      background: var(--c-carbon);
+      border: 1px solid var(--c-dark);
+      border-radius: var(--radius-md);
+      padding: 3rem;
+      width: 100%;
+      max-width: 400px;
+      position: relative;
+      transform: translateY(20px);
+      transition: transform var(--transition);
+    }
+
+    .modal-overlay.active .modal-content {
+      transform: translateY(0);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: none;
+      border: none;
+      color: var(--c-mid);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: color var(--transition);
+    }
+
+    .modal-close:hover {
+      color: var(--c-cream);
+    }
+
+    .modal-title {
+      font-family: var(--ff-display);
+      font-size: 1.8rem;
+      color: var(--c-cream);
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+
+    .modal-subtitle {
+      font-size: 0.85rem;
+      color: var(--c-mid);
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .btn-social {
+      width: 100%;
+      background: var(--c-black);
+      color: var(--c-cream);
+      border: 1px solid var(--c-dark);
+      padding: 0.9rem;
+      font-family: var(--ff-ui);
+      font-weight: 500;
+      font-size: 0.9rem;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      transition: all var(--transition);
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-social:hover {
+      background: #1a1a1a;
+      border-color: var(--c-mid);
+    }
+
+    .btn-social svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: var(--c-mid);
+      font-size: 0.8rem;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--c-dark);
+    }
+
+    .divider:not(:empty)::before {
+      margin-right: 1rem;
+    }
+
+    .divider:not(:empty)::after {
+      margin-left: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--c-light);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .form-group input {
+      width: 100%;
+      background: var(--c-black);
+      border: 1px solid var(--c-dark);
+      color: var(--c-cream);
+      padding: 0.8rem 1rem;
+      border-radius: 4px;
+      font-family: var(--ff-ui);
+      font-size: 0.9rem;
+      transition: border-color var(--transition);
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--c-gold);
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--c-gold);
+      color: var(--c-black);
+      border: none;
+      padding: 1rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: opacity var(--transition);
+      margin-top: 1rem;
+    }
+
+    .btn-submit:hover {
+      opacity: 0.9;
+    }
+
+    .modal-footer {
+      margin-top: 1.5rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--c-mid);
+    }
+
+    .modal-footer a {
+      color: var(--c-gold);
+      text-decoration: underline;
+    }
+
+    .pwd-meter-container {
+      margin-top: 0.5rem;
+      display: none;
+      
+    }
+
+    .pwd-meter-bar {
+      height: 4px;
+      background: var(--c-dark);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 0.25rem;
+    }
+
+    .pwd-meter-fill {
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s ease, background-color 0.3s ease;
+    }
+
+    .pwd-meter-text {
+      font-size: 0.75rem;
+      color: var(--c-mid);
+    }
+
+    
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--ff-ui);
+      background: var(--c-black);
+      color: var(--c-cream);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2.5rem;
+      border-bottom: 1px solid var(--c-dark);
+      position: sticky;
+      top: 0;
+      background: rgba(10, 10, 10, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--c-light);
+      text-decoration: none;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: color var(--transition);
+    }
+
+    .btn-back:hover {
+      color: var(--c-gold);
+    }
+
+    .brand {
+      font-family: var(--ff-display);
+      font-size: 1.3rem;
+      letter-spacing: 0.12em;
+      color: var(--c-cream);
+      text-decoration: none;
+    }
+
+    .brand span {
+      color: var(--c-gold);
+    }
+
+    .header-badge {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      color: var(--c-mid);
+      text-transform: uppercase;
+    }
+
+    
+    main {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 0;
+      min-height: calc(100vh - 65px);
+    }
+
+    
+    .preview-panel {
+      background: var(--c-carbon);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+      position: relative;
+    }
+
+    .preview-label {
+      position: absolute;
+      top: 1.5rem;
+      left: 2rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      color: var(--c-mid);
+      text-transform: uppercase;
+    }
+
+    
+    .tshirt-wrapper {
+      position: relative;
+      width: 100%;
+      height: 500px;
+      max-width: 480px;
+      user-select: none;
+    }
+
+    model-viewer {
+      width: 100%;
+      height: 100%;
+      --poster-color: transparent;
+    }
+
+    
+    .zone-controls {
+      position: absolute;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 0.5rem;
+      opacity: 0;
+      transition: opacity var(--transition);
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .zone-controls.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .zone-btn {
+      background: var(--c-dark);
+      border: 1px solid var(--c-dark);
+      color: var(--c-cream);
+      font-size: 0.75rem;
+      padding: 0.3rem 0.65rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background var(--transition), border-color var(--transition);
+      font-family: var(--ff-ui);
+    }
+
+    .zone-btn:hover {
+      background: var(--c-gold);
+      border-color: var(--c-gold);
+      color: var(--c-black);
+    }
+
+    
+    .color-switcher {
+      position: absolute;
+      bottom: 1.5rem;
+      right: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.5rem;
+    }
+
+    .color-switcher-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      color: var(--c-mid);
+      text-transform: uppercase;
+    }
+
+    .color-dots {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .color-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color var(--transition), transform var(--transition);
+    }
+
+    .color-dot:hover {
+      transform: scale(1.15);
+    }
+
+    .color-dot.active {
+      border-color: var(--c-gold);
+    }
+
+    .color-dot[data-color="white"] {
+      background: #F5F5F0;
+    }
+
+    .color-dot[data-color="black"] {
+      background: #1A1A1A;
+    }
+
+    .color-dot[data-color="navy"] {
+      background: #1B2A4A;
+    }
+
+    .color-dot[data-color="beige"] {
+      background: #D4C5A9;
+    }
+
+    .color-dot[data-color="olive"] {
+      background: #4A4A2E;
+    }
+
+    
+    .controls-panel {
+      background: var(--c-black);
+      border-left: 1px solid var(--c-dark);
+      padding: 2.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      overflow-y: auto;
+    }
+
+    
+    .product-title {
+      font-family: var(--ff-display);
+      font-size: 1.6rem;
+      line-height: 1.3;
+      color: var(--c-cream);
+      font-weight: 500;
+    }
+
+    .product-subtitle {
+      font-size: 0.8rem;
+      color: var(--c-mid);
+      margin-top: 0.4rem;
+      font-weight: 300;
+      letter-spacing: 0.05em;
+    }
+
+    
+    .price-tag {
+      font-size: 1.1rem;
+      color: var(--c-gold);
+      font-weight: 600;
+      margin-top: 0.25rem;
+    }
+
+    
+    .section-divider {
+      height: 1px;
+      background: var(--c-dark);
+    }
+
+    
+    .section-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--c-mid);
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    
+    .upload-zone {
+      border: 1.5px dashed var(--c-dark);
+      border-radius: var(--radius-md);
+      padding: 1.75rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color var(--transition), background var(--transition);
+      position: relative;
+    }
+
+    .upload-zone:hover,
+    .upload-zone.drag-over {
+      border-color: var(--c-gold);
+      background: rgba(200, 169, 110, 0.04);
+    }
+
+    
+    #fileInput {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .upload-icon {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .upload-text {
+      font-size: 0.85rem;
+      color: var(--c-light);
+      line-height: 1.6;
+    }
+
+    .upload-text strong {
+      color: var(--c-gold);
+    }
+
+    .upload-hint {
+      font-size: 0.7rem;
+      color: var(--c-mid);
+      margin-top: 0.5rem;
+    }
+
+    
+    .thumb-preview {
+      display: none;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1rem;
+      background: var(--c-carbon);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--c-dark);
+    }
+
+    .thumb-preview.visible {
+      display: flex;
+    }
+
+    .thumb-img {
+      width: 48px;
+      height: 48px;
+      object-fit: cover;
+      border-radius: 4px;
+      border: 1px solid var(--c-dark);
+    }
+
+    .thumb-info {
+      flex: 1;
+    }
+
+    .thumb-name {
+      font-size: 0.8rem;
+      color: var(--c-cream);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 180px;
+    }
+
+    .thumb-size {
+      font-size: 0.7rem;
+      color: var(--c-mid);
+      margin-top: 0.15rem;
+    }
+
+    .thumb-remove {
+      background: none;
+      border: none;
+      color: var(--c-mid);
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: 0.25rem;
+      transition: color var(--transition);
+    }
+
+    .thumb-remove:hover {
+      color: var(--c-danger);
+    }
+
+    
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .slider-icon {
+      font-size: 0.9rem;
+      color: var(--c-mid);
+      width: 18px;
+      text-align: center;
+    }
+
+    .slider-label {
+      font-size: 0.75rem;
+      color: var(--c-light);
+      width: 60px;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      appearance: none;
+      height: 3px;
+      background: var(--c-dark);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--c-gold);
+      border: 2px solid var(--c-black);
+      transition: transform var(--transition);
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.3);
+    }
+
+    .slider-value {
+      font-size: 0.75rem;
+      color: var(--c-mid);
+      width: 35px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    
+    .side-tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .side-tab {
+      flex: 1;
+      background: var(--c-carbon);
+      border: 1px solid var(--c-dark);
+      color: var(--c-light);
+      font-family: var(--ff-ui);
+      font-size: 0.8rem;
+      padding: 0.6rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .side-tab.active {
+      background: var(--c-gold);
+      color: var(--c-black);
+      font-weight: 600;
+      border-color: var(--c-gold);
+    }
+
+    
+    .size-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.5rem;
+    }
+
+    .size-btn {
+      background: var(--c-carbon);
+      border: 1px solid var(--c-dark);
+      color: var(--c-light);
+      font-family: var(--ff-ui);
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 0.55rem 0;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition);
+      text-align: center;
+    }
+
+    .size-btn:hover {
+      border-color: var(--c-gold);
+      color: var(--c-gold);
+    }
+
+    .size-btn.selected {
+      background: var(--c-gold);
+      border-color: var(--c-gold);
+      color: var(--c-black);
+      font-weight: 600;
+    }
+
+    
+    textarea {
+      width: 100%;
+      background: var(--c-carbon);
+      border: 1px solid var(--c-dark);
+      border-radius: var(--radius-sm);
+      color: var(--c-cream);
+      font-family: var(--ff-ui);
+      font-size: 0.82rem;
+      padding: 0.75rem 1rem;
+      resize: vertical;
+      min-height: 80px;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+
+    textarea::placeholder {
+      color: var(--c-mid);
+    }
+
+    textarea:focus {
+      border-color: var(--c-gold);
+    }
+
+    
+    .status-msg {
+      font-size: 0.78rem;
+      padding: 0.6rem 0.9rem;
+      border-radius: var(--radius-sm);
+      display: none;
+    }
+
+    .status-msg.error {
+      display: block;
+      background: rgba(192, 57, 43, 0.12);
+      border: 1px solid rgba(192, 57, 43, 0.4);
+      color: #E74C3C;
+    }
+
+    .status-msg.success {
+      display: block;
+      background: rgba(39, 174, 96, 0.12);
+      border: 1px solid rgba(39, 174, 96, 0.4);
+      color: #2ECC71;
+    }
+
+    
+    .btn-order {
+      background: var(--c-gold);
+      border: none;
+      color: var(--c-black);
+      font-family: var(--ff-ui);
+      font-size: 0.88rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding: 1rem 1.5rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition);
+      width: 100%;
+      margin-top: auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-order:hover:not(:disabled) {
+      background: var(--c-gold-d);
+    }
+
+    .btn-order:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    .btn-order:disabled {
+      background: var(--c-dark);
+      color: var(--c-mid);
+      cursor: not-allowed;
+    }
+
+    
+    .btn-order .spinner {
+      display: none;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(0, 0, 0, 0.3);
+      border-top-color: var(--c-black);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle;
+      margin-right: 0.4rem;
+    }
+
+    .btn-order.loading .spinner {
+      display: inline-block;
+    }
+
+    .btn-order.loading .btn-text {
+      opacity: 0.7;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    
+    @media (max-width: 880px) {
+      main {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+      }
+
+      .preview-panel {
+        padding: 2rem 1rem 3.5rem;
+      }
+
+      .tshirt-wrapper {
+        max-width: 320px;
+      }
+
+      .controls-panel {
+        border-left: none;
+        border-top: 1px solid var(--c-dark);
+      }
+
+      header {
+        padding: 1rem 1.25rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  
+  <header>
+    <div class="header-left">
+      <a href="index.html" class="btn-back">← Volver al Catálogo</a>
+    </div>
+    <a href="index.html" class="brand">OVER<span>MARK</span></a>
+
+    <div class="header-right" id="authButtonsContainer" style="display: flex; gap: 1rem; align-items: center;">
+      
+      <span class="header-badge" id="defaultBadge">Personalizador de diseño</span>
+    </div>
+  </header>
+
+  <main>
+
+    
+    <section class="preview-panel" aria-label="Vista previa de la franela">
+      <span class="preview-label">Vista previa en tiempo real</span>
+
+      <div class="view-controls" style="position: absolute; top: 1.5rem; right: 2rem; z-index: 10;">
+        <button class="zone-btn" id="btnToggleRotate" onclick="toggleAutoRotate()" title="Detener rotación"
+          style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">⏸</button>
+      </div>
+
+      <div class="tshirt-wrapper">
+
+        
+        <model-viewer id="tshirtModel" src="Low_T-shirt.obj.glb" camera-controls disable-zoom auto-rotate
+          environment-image="neutral" shadow-intensity="1">
+        </model-viewer>
+
+        
+        <div class="zone-controls" id="zoneControls">
+          <button class="zone-btn" onclick="resetAdjustments()">↩ Resetear</button>
+          <button class="zone-btn" onclick="removeImage()">✕ Quitar</button>
+        </div>
+
+      </div>
+
+      
+      <div class="color-switcher">
+        <span class="color-switcher-label">Color de franela</span>
+        <div class="color-dots">
+          <div class="color-dot active" data-color="white" title="Blanco" onclick="changeShirtColor(this)"></div>
+          <div class="color-dot" data-color="black" title="Negro" onclick="changeShirtColor(this)"></div>
+          <div class="color-dot" data-color="navy" title="Navy" onclick="changeShirtColor(this)"></div>
+          <div class="color-dot" data-color="beige" title="Beige" onclick="changeShirtColor(this)"></div>
+          <div class="color-dot" data-color="olive" title="Olivo" onclick="changeShirtColor(this)"></div>
+        </div>
+      </div>
+    </section>
+
+    
+    <aside class="controls-panel" aria-label="Opciones del pedido">
+
+      
+      <div>
+        <h1 class="product-title" id="dynProductTitle">Cargando Producto...</h1>
+        <p class="product-subtitle" id="dynProductDesc">Cargando detalles...</p>
+        <p class="price-tag" id="dynProductPrice">$0.00</p>
+      </div>
+
+      <div class="section-divider"></div>
+
+      
+      <div class="side-tabs">
+        <button class="side-tab active" id="tabFront" onclick="switchSide('front')">Frente</button>
+        <button class="side-tab" id="tabBack" onclick="switchSide('back')">Espalda</button>
+      </div>
+
+      <div class="section-divider"></div>
+
+      
+      <div>
+        <p class="section-label">Tu diseño</p>
+
+        
+        <div class="upload-zone" id="uploadZone" role="button" aria-label="Área para subir tu diseño" tabindex="0">
+          
+          <input type="file" id="fileInput" accept="image/jpeg,image/png" aria-label="Seleccionar imagen" />
+          <div class="upload-icon">⬆️</div>
+          <p class="upload-text">
+            <strong>Arrastra tu imagen aquí</strong><br>
+            o haz clic para seleccionarla
+          </p>
+          <p class="upload-hint">JPEG / PNG · Máx. 5 MB · Mín. 300×300 px recomendado</p>
+        </div>
+
+        
+        <div class="thumb-preview" id="thumbPreview">
+          <img class="thumb-img" id="thumbImg" alt="Miniatura" />
+          <div class="thumb-info">
+            <p class="thumb-name" id="thumbName"></p>
+            <p class="thumb-size" id="thumbSize"></p>
+          </div>
+          <button class="thumb-remove" onclick="removeImage()" title="Quitar imagen"
+            aria-label="Quitar imagen">✕</button>
+        </div>
+
+        
+        <div class="status-msg" id="statusMsg" role="alert"></div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      
+      <div id="adjustControls" style="display:none;">
+        <p class="section-label">Ajustar diseño</p>
+        <div class="slider-group">
+
+          
+          <div class="slider-row">
+            <span class="slider-icon">⊡</span>
+            <span class="slider-label">Tamaño</span>
+            <input type="range" id="sizeSlider" min="5" max="300" value="40" aria-label="Tamaño del diseño" />
+            <span class="slider-value" id="sizeVal">40%</span>
+          </div>
+
+          
+          <div class="slider-row">
+            <span class="slider-icon">↕</span>
+            <span class="slider-label">Vertical</span>
+            <input type="range" id="posYSlider" min="-45" max="45" value="0"
+              aria-label="Posición vertical del diseño" />
+            <span class="slider-value" id="posYVal">0</span>
+          </div>
+
+          
+          <div class="slider-row">
+            <span class="slider-icon">↔</span>
+            <span class="slider-label">Horizontal</span>
+            <input type="range" id="posXSlider" min="-45" max="45" value="0"
+              aria-label="Posición horizontal del diseño" />
+            <span class="slider-value" id="posXVal">0</span>
+          </div>
+
+          
+          <div class="slider-row">
+            <span class="slider-icon">↻</span>
+            <span class="slider-label">Rotación</span>
+            <input type="range" id="rotationSlider" min="0" max="360" value="0" aria-label="Rotación del diseño" />
+            <span class="slider-value" id="rotationVal">0°</span>
+          </div>
+
+          
+          <div class="slider-row"
+            style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; color: #a0a0a0;">
+              <span class="slider-icon">◧</span>
+              <span class="slider-label">Efecto espejo</span>
+            </div>
+            <label class="switch" style="position: relative; display: inline-block; width: 40px; height: 20px;">
+              <input type="checkbox" id="mirrorCheck" style="opacity: 0; width: 0; height: 0;"
+                aria-label="Efecto espejo">
+              <span class="slider-toggle"
+                style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 20px;"></span>
+            </label>
+          </div>
+          <style>
+            .slider-toggle:before {
+              position: absolute;
+              content: "";
+              height: 16px;
+              width: 16px;
+              left: 2px;
+              bottom: 2px;
+              background-color: white;
+              transition: .4s;
+              border-radius: 50%;
+            }
+
+            input:checked+.slider-toggle {
+              background-color: #D4C5A9;
+            }
+
+            input:checked+.slider-toggle:before {
+              transform: translateX(20px);
+            }
+          </style>
+
+        </div>
+        <div class="section-divider" style="margin-top:1rem;"></div>
+      </div>
+
+      
+      <div>
+        <p class="section-label">Talla</p>
+        <div class="size-grid" role="group" aria-label="Seleccionar talla">
+          <button class="size-btn" data-size="XS" onclick="selectSize(this)">XS</button>
+          <button class="size-btn" data-size="S" onclick="selectSize(this)">S</button>
+          <button class="size-btn" data-size="M" onclick="selectSize(this)">M</button>
+          <button class="size-btn selected" data-size="L" onclick="selectSize(this)">L</button>
+          <button class="size-btn" data-size="XL" onclick="selectSize(this)">XL</button>
+        </div>
+      </div>
+
+      
+      <div style="margin-bottom: 1.5rem;">
+        <p class="section-label">Notas del pedido (opcional)</p>
+        <textarea id="orderNotes"
+          placeholder="Ej: Prefiero el diseño ligeramente hacia la izquierda, o indicaciones especiales de color..."></textarea>
+      </div>
+
+      
+      <div style="margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between;">
+        <p class="section-label" style="margin-bottom: 0;">Cantidad</p>
+        <div style="display: flex; align-items: center; background: var(--c-black); border: 1px solid var(--c-dark); border-radius: 4px;">
+          <button type="button" onclick="document.getElementById('orderQty').stepDown()" style="background: none; border: none; color: var(--c-cream); padding: 0.5rem 1rem; cursor: pointer; font-size: 1.2rem;">-</button>
+          <input type="number" id="orderQty" value="1" min="1" max="99" style="background: transparent; border: none; color: var(--c-white); width: 40px; text-align: center; font-family: var(--ff-ui); font-size: 1rem; -moz-appearance: textfield; appearance: textfield;" />
+          <button type="button" onclick="document.getElementById('orderQty').stepUp()" style="background: none; border: none; color: var(--c-cream); padding: 0.5rem 1rem; cursor: pointer; font-size: 1.2rem;">+</button>
+        </div>
+      </div>
+
+      
+      <button class="btn-order" id="btnOrder" disabled onclick="processOrder()">
+        <span class="spinner"></span>
+        <span class="btn-text">Añadir al Carrito</span>
+      </button>
+
+    </aside>
+  </main>
+
+  
+  <div class="modal-overlay" id="authModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()">×</button>
+
+      <h2 class="modal-title" id="modalTitle">Iniciar Sesión</h2>
+      <p class="modal-subtitle" id="modalSubtitle">Debes iniciar sesión para procesar tu pedido</p>
+
+      
+      <button class="btn-social btn-google" onclick="loginWithGoogle(); return false;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+          <path fill="#EA4335"
+            d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.73 17.74 9.5 24 9.5z" />
+          <path fill="#4285F4"
+            d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+          <path fill="#FBBC05"
+            d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+          <path fill="#34A853"
+            d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+        </svg>
+        Continuar con Google
+      </button>
+
+      <div class="divider">o usar correo electrónico</div>
+
+      <form id="authForm">
+
+        <div class="form-group" id="nameGroup" style="display: none;">
+          <label for="name">Nombre Completo</label>
+          <input type="text" id="name" placeholder="Ej. Juan Pérez" />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Correo Electrónico</label>
+          <input type="email" id="email" required placeholder="correo@ejemplo.com" />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+          <input type="password" id="password" required placeholder="••••••••" autocomplete="new-password" />
+          <div class="pwd-meter-container" id="pwdMeterContainer">
+            <div class="pwd-meter-bar">
+              <div class="pwd-meter-fill" id="pwdMeterFill"></div>
+            </div>
+            <div class="pwd-meter-text" id="pwdMeterText">Ingresa una contraseña</div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="btnSubmit">Entrar</button>
+      </form>
+
+      <div class="modal-footer" id="modalFooter">
+        ¿No tienes cuenta? <a href="#" onclick="openModal('signup'); return false;">Regístrate aquí</a>
+      </div>
+    </div>
+  </div>
+
+  
+  <script>
+    'use strict';
+
+    
+    const uploadZone = document.getElementById('uploadZone');
+    const fileInput = document.getElementById('fileInput');
+    const tshirtModel = document.getElementById('tshirtModel');
+    const thumbPreview = document.getElementById('thumbPreview');
+    const thumbImg = document.getElementById('thumbImg');
+    const thumbName = document.getElementById('thumbName');
+    const thumbSize = document.getElementById('thumbSize');
+    const statusMsg = document.getElementById('statusMsg');
+    const adjustControls = document.getElementById('adjustControls');
+    const zoneControls = document.getElementById('zoneControls');
+    const btnOrder = document.getElementById('btnOrder');
+    const notesInput = document.getElementById('orderNotes');
+
+    
+    const sizeSlider = document.getElementById('sizeSlider');
+    const posYSlider = document.getElementById('posYSlider');
+    const posXSlider = document.getElementById('posXSlider');
+    const rotationSlider = document.getElementById('rotationSlider');
+    const mirrorCheck = document.getElementById('mirrorCheck');
+
+    
+    let currentSide = 'front';
+    let selectedSize = 'L';
+    let isLoggedIn = false;
+
+    const sideState = {
+      front: { file: null, imgObj: null, size: 40, posX: 0, posY: 0, rotation: 0, mirror: false },
+      back: { file: null, imgObj: null, size: 40, posX: 0, posY: 0, rotation: 0, mirror: false }
+    };
+
+    
+    
+    
+    // Aquí pongo mi URL de Supabase para conectarme a la base de datos
+    const SUPABASE_URL = 'https://kynysaefypgugdvcfpzj.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5bnlzYWVmeXBndWdkdmNmcHpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5MTEwODgsImV4cCI6MjEwNDQ4NzA4OH0.GsC_nggMng_-5-3K2T1rApgctiyWcVXAeS7uw5H2ftU';
+
+    let supabaseClient = null;
+    try {
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    } catch (e) {
+      console.warn("Supabase no configurado:", e.message);
+    }
+
+    function switchSide(side) {
+      currentSide = side;
+      document.getElementById('tabFront').classList.toggle('active', side === 'front');
+      document.getElementById('tabBack').classList.toggle('active', side === 'back');
+      updateUIForSide();
+    }
+
+    function updateUIForSide() {
+      const state = sideState[currentSide];
+
+      if (state.file) {
+        thumbImg.src = state.imgObj.src;
+        thumbName.textContent = truncateFilename(state.file.name, 25);
+        thumbSize.textContent = formatFileSize(state.file.size);
+        thumbPreview.classList.add('visible');
+        uploadZone.style.display = 'none';
+
+        adjustControls.style.display = 'block';
+        zoneControls.classList.add('visible');
+
+        sizeSlider.value = state.size;
+        posXSlider.value = state.posX;
+        posYSlider.value = state.posY;
+        rotationSlider.value = state.rotation;
+        mirrorCheck.checked = state.mirror;
+
+        updateSliderLabels();
+      } else {
+        thumbPreview.classList.remove('visible');
+        uploadZone.style.display = 'block';
+        adjustControls.style.display = 'none';
+        zoneControls.classList.remove('visible');
+      }
+      checkOrderButton();
+    }
+
+    function checkOrderButton() {
+      if (sideState.front.file || sideState.back.file) {
+        btnOrder.disabled = false;
+        btnOrder.querySelector('.btn-text').textContent = 'Añadir al Carrito';
+      } else {
+        btnOrder.disabled = true;
+        btnOrder.querySelector('.btn-text').textContent = 'Sube tu diseño para continuar';
+      }
+    }
+
+    const MAX_FILE_SIZE_MB = 5;
+    const MAX_FILE_SIZE_B = MAX_FILE_SIZE_MB * 1024 * 1024;
+    const ALLOWED_TYPES = ['image/jpeg', 'image/png'];
+
+    uploadZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadZone.classList.add('drag-over');
+    });
+
+    uploadZone.addEventListener('dragleave', () => {
+      uploadZone.classList.remove('drag-over');
+    });
+
+    uploadZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadZone.classList.remove('drag-over');
+      const file = e.dataTransfer.files[0];
+      if (file) handleFile(file);
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) handleFile(file);
+    });
+
+    uploadZone.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        fileInput.click();
+      }
+    });
+
+    function validateFile(file) {
+      if (!ALLOWED_TYPES.includes(file.type)) return 'Solo se aceptan imágenes JPEG o PNG.';
+      if (file.size > MAX_FILE_SIZE_B) return `El archivo supera el límite de ${MAX_FILE_SIZE_MB} MB.`;
+      return null;
+    }
+
+    function handleFile(file) {
+      clearStatus();
+      const error = validateFile(file);
+      if (error) {
+        showStatus(error, 'error');
+        return;
+      }
+
+      const state = sideState[currentSide];
+      state.file = file;
+
+      const objectURL = URL.createObjectURL(file);
+      state.imgObj = new Image();
+      state.imgObj.onload = () => {
+        state.size = 40;
+        state.posX = 0;
+        state.posY = 0;
+        state.rotation = 0;
+        state.mirror = false;
+        updateUIForSide();
+        applyAdjustments();
+      };
+      state.imgObj.src = objectURL;
+    }
+
+    function updateSliderLabels() {
+      document.getElementById('sizeVal').textContent = `${sizeSlider.value}%`;
+      document.getElementById('posYVal').textContent = posYSlider.value;
+      document.getElementById('posXVal').textContent = posXSlider.value;
+      document.getElementById('rotationVal').textContent = `${rotationSlider.value}°`;
+    }
+
+    async function applyAdjustments() {
+      if (!tshirtModel.model) return;
+
+      const state = sideState[currentSide];
+      if (state.file) {
+        state.size = sizeSlider.value;
+        state.posX = posXSlider.value;
+        state.posY = posYSlider.value;
+        state.rotation = rotationSlider.value;
+        state.mirror = mirrorCheck.checked;
+      }
+      updateSliderLabels();
+
+      const canvas = document.createElement('canvas');
+      canvas.width = 1024;
+      canvas.height = 1024;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = currentShirtHex;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      if (sideState.front.imgObj) {
+        const f = sideState.front;
+        const baseScale = 400 / Math.max(f.imgObj.width, f.imgObj.height);
+        const scale = f.size / 100;
+        const w = f.imgObj.width * baseScale * scale;
+        const h = f.imgObj.height * baseScale * scale;
+        
+        const centerX = canvas.width * 0.72 + parseInt(f.posX) * 5;
+        const centerY = canvas.height * 0.45 - parseInt(f.posY) * 5; 
+        ctx.globalAlpha = 1;
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        let scaleX = 1;
+        if (f.mirror) scaleX *= -1;
+        ctx.scale(scaleX, -1);
+        ctx.rotate(f.rotation * Math.PI / 180);
+        ctx.drawImage(f.imgObj, -w / 2, -h / 2, w, h);
+        ctx.restore();
+      }
+
+      if (sideState.back.imgObj) {
+        const b = sideState.back;
+        const baseScale = 400 / Math.max(b.imgObj.width, b.imgObj.height);
+        const scale = b.size / 100;
+        const w = b.imgObj.width * baseScale * scale;
+        const h = b.imgObj.height * baseScale * scale;
+        
+        const centerX = canvas.width * 0.28 + parseInt(b.posX) * 5;
+        const centerY = canvas.height * 0.45 - parseInt(b.posY) * 5;
+        ctx.globalAlpha = 1;
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        let scaleX = 1;
+        if (b.mirror) scaleX *= -1;
+        ctx.scale(scaleX, -1);
+        ctx.rotate(b.rotation * Math.PI / 180);
+        ctx.drawImage(b.imgObj, -w / 2, -h / 2, w, h);
+        ctx.restore();
+      }
+
+      const texture = await tshirtModel.createTexture(canvas.toDataURL());
+      for (const material of tshirtModel.model.materials) {
+        if (material.pbrMetallicRoughness) material.pbrMetallicRoughness.baseColorTexture.setTexture(texture);
+      }
+    }
+
+    [sizeSlider, posYSlider, posXSlider, rotationSlider, mirrorCheck].forEach(el => {
+      el.addEventListener('input', applyAdjustments);
+    });
+
+    function resetAdjustments() {
+      sizeSlider.value = 40;
+      posYSlider.value = 0;
+      posXSlider.value = 0;
+      rotationSlider.value = 0;
+      mirrorCheck.checked = false;
+      applyAdjustments();
+    }
+
+    function removeImage() {
+      const state = sideState[currentSide];
+      state.file = null;
+      state.imgObj = null;
+      fileInput.value = '';
+      updateUIForSide();
+      applyAdjustments();
+      clearStatus();
+    }
+
+    const SHIRT_COLORS = {
+      white: '#F5F5F0', black: '#1A1A1A', navy: '#1B2A4A', beige: '#D4C5A9', olive: '#4A4A2E',
+    };
+    let currentShirtHex = '#1A1A1A';
+
+    function changeShirtColor(dot) {
+      if (!dot) return;
+      document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+      dot.classList.add('active');
+      const color = dot.dataset.color;
+      currentShirtHex = SHIRT_COLORS[color] || '#1A1A1A';
+      applyAdjustments();
+      if (tshirtModel.model) {
+        for (const material of tshirtModel.model.materials) {
+          if (typeof material.setDoubleSided === 'function') material.setDoubleSided(true);
+          if (material.pbrMetallicRoughness) {
+            material.pbrMetallicRoughness.setBaseColorFactor([1, 1, 1, 1]);
+            material.pbrMetallicRoughness.setMetallicFactor(0);
+            material.pbrMetallicRoughness.setRoughnessFactor(0.9);
+          }
+        }
+      }
+    }
+
+    tshirtModel.addEventListener('load', () => {
+      const activeDot = document.querySelector('.color-dot.active');
+      changeShirtColor(activeDot);
+    });
+
+    let isAutoRotate = true;
+    function toggleAutoRotate() {
+      const btn = document.getElementById('btnToggleRotate');
+      isAutoRotate = !isAutoRotate;
+      if (isAutoRotate) {
+        tshirtModel.setAttribute('auto-rotate', '');
+        btn.textContent = '⏸';
+        btn.title = 'Detener rotación';
+      } else {
+        tshirtModel.removeAttribute('auto-rotate');
+        btn.textContent = '▶';
+        btn.title = 'Activar rotación';
+      }
+    }
+
+    function selectSize(btn) {
+      document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedSize = btn.dataset.size;
+    }
+
+    
+    
+    
+    async function processOrder() {
+      if (!sideState.front.file && !sideState.back.file) {
+        showStatus('Por favor sube al menos una imagen antes de pedir.', 'error');
+        return;
+      }
+      if (!isLoggedIn) {
+        openModal('login');
+        return;
+      }
+      if (!supabaseClient) {
+        showStatus('Supabase no está configurado. No se puede guardar el pedido.', 'error');
+        return;
+      }
+
+      btnOrder.disabled = true;
+      btnOrder.classList.add('loading');
+      btnOrder.querySelector('.btn-text').textContent = 'Subiendo diseño...';
+      clearStatus();
+
+      try {
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        if (!user) throw new Error("Debes iniciar sesión.");
+
+        const orderData = {
+          customer_name: user.user_metadata?.full_name || 'Desconocido',
+          customer_email: user.email,
+          product_id: currentProductId, 
+          name: document.getElementById('dynProductTitle').textContent,
+          price: parseFloat(document.getElementById('dynProductPrice').textContent.replace(/[^0-9.-]+/g,"")) || 28.00,
+          quantity: parseInt(document.getElementById('orderQty').value) || 1,
+          size: selectedSize,
+          notes: notesInput.value.trim(),
+          config: {
+            img_size_front: parseInt(sideState.front.size) || 40,
+            img_pos_x_front: parseInt(sideState.front.posX) || 0,
+            img_pos_y_front: parseInt(sideState.front.posY) || 0,
+            img_rotation_front: parseInt(sideState.front.rotation) || 0,
+            img_mirror_front: sideState.front.mirror || false,
+            img_size_back: parseInt(sideState.back.size) || 40,
+            img_pos_x_back: parseInt(sideState.back.posX) || 0,
+            img_pos_y_back: parseInt(sideState.back.posY) || 0,
+            img_rotation_back: parseInt(sideState.back.rotation) || 0,
+            img_mirror_back: sideState.back.mirror || false
+          }
+        };
+
+        async function uploadImage(file, side, bucket = 'orders_images') {
+          if (!file) return null;
+          let ext = 'png';
+          if (file.name) {
+            ext = file.name.split('.').pop();
+          }
+          const fileName = `cart_${Date.now()}_${side}.${ext}`;
+          const { data, error } = await supabaseClient.storage.from(bucket).upload(fileName, file);
+          if (error) throw error;
+          const { data: publicUrlData } = supabaseClient.storage.from(bucket).getPublicUrl(fileName);
+          return publicUrlData.publicUrl;
+        }
+
+        function createPrintReadyBlob(state) {
+          return new Promise((resolve) => {
+            if (!state.imgObj) { resolve(null); return; }
+            const canvas = document.createElement('canvas');
+            canvas.width = 2400; 
+            canvas.height = 2400;
+            const ctx = canvas.getContext('2d');
+            
+            const baseScale = 1200 / Math.max(state.imgObj.width, state.imgObj.height);
+            const scale = state.size / 100;
+            const w = state.imgObj.width * baseScale * scale;
+            const h = state.imgObj.height * baseScale * scale;
+            
+            const centerX = canvas.width / 2 + parseInt(state.posX) * 12;
+            const centerY = canvas.height / 2 - parseInt(state.posY) * 12;
+            
+            ctx.translate(centerX, centerY);
+            if (state.mirror) ctx.scale(-1, 1);
+            ctx.rotate(state.rotation * Math.PI / 180);
+            ctx.drawImage(state.imgObj, -w / 2, -h / 2, w, h);
+            
+            canvas.toBlob((blob) => resolve(blob), 'image/png');
+          });
+        }
+
+        btnOrder.querySelector('.btn-text').textContent = 'Subiendo diseño Print-Ready...';
+        const frontBlob = await createPrintReadyBlob(sideState.front);
+        if (frontBlob) orderData.print_ready_front = await uploadImage(frontBlob, 'pr_front', 'user_designs');
+        
+        const backBlob = await createPrintReadyBlob(sideState.back);
+        if (backBlob) orderData.print_ready_back = await uploadImage(backBlob, 'pr_back', 'user_designs');
+
+        btnOrder.querySelector('.btn-text').textContent = 'Subiendo vistas previas...';
+        orderData.image_front = await uploadImage(sideState.front.file, 'front');
+        orderData.image_back = await uploadImage(sideState.back.file, 'back');
+
+        btnOrder.querySelector('.btn-text').textContent = 'Capturando modelo 3D...';
+        const viewer = document.getElementById('tshirtModel');
+        const mockupBlob = await viewer.toBlob({idealAspect: true});
+        orderData.mockup_url = await uploadImage(mockupBlob, 'mockup');
+
+        btnOrder.querySelector('.btn-text').textContent = 'Guardando en el carrito...';
+        
+        
+        addCustomToCart(orderData);
+
+      } catch (err) {
+        console.error('Error al procesar:', err);
+        showStatus(err.message || 'Error al añadir al carrito.', 'error');
+        btnOrder.disabled = false;
+        btnOrder.querySelector('.btn-text').textContent = 'Añadir al Carrito';
+      } finally {
+        btnOrder.classList.remove('loading');
+      }
+    }
+
+    
+    
+    
+
+    function showStatus(msg, type) {
+      statusMsg.textContent = msg;
+      statusMsg.className = `status-msg ${type}`;
+    }
+
+    function clearStatus() {
+      statusMsg.textContent = '';
+      statusMsg.className = 'status-msg';
+    }
+
+    function formatFileSize(bytes) {
+      if (bytes < 1024) return `${bytes} B`;
+      if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+      return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+    }
+
+    function truncateFilename(name, maxLen) {
+      if (name.length <= maxLen) return name;
+      const ext = name.slice(name.lastIndexOf('.'));
+      return name.slice(0, maxLen - ext.length - 3) + '…' + ext;
+    }
+
+    
+    
+    
+    const authModal = document.getElementById('authModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const nameGroup = document.getElementById('nameGroup');
+    const btnSubmit = document.getElementById('btnSubmit');
+    const modalFooter = document.getElementById('modalFooter');
+    const authForm = document.getElementById('authForm');
+    const authButtonsContainer = document.getElementById('authButtonsContainer');
+    const defaultBadge = document.getElementById('defaultBadge');
+
+    
+    const pwdMeterContainer = document.getElementById('pwdMeterContainer');
+    const pwdMeterFill = document.getElementById('pwdMeterFill');
+    const pwdMeterText = document.getElementById('pwdMeterText');
+    const passwordInput = document.getElementById('password');
+
+    let currentAuthMode = 'login';
+
+    function openModal(type) {
+      currentAuthMode = type;
+      authForm.reset();
+
+      if (type === 'login') {
+        modalTitle.textContent = 'Iniciar Sesión';
+        nameGroup.style.display = 'none';
+        pwdMeterContainer.style.display = 'none';
+        btnSubmit.textContent = 'Entrar';
+        modalFooter.innerHTML = '¿No tienes cuenta? <a href="#" onclick="openModal(\'signup\'); return false;">Regístrate aquí</a>';
+      } else {
+        modalTitle.textContent = 'Crear Cuenta';
+        nameGroup.style.display = 'block';
+        pwdMeterContainer.style.display = 'block';
+        btnSubmit.textContent = 'Registrarse';
+        modalFooter.innerHTML = '¿Ya tienes cuenta? <a href="#" onclick="openModal(\'login\'); return false;">Inicia sesión</a>';
+        updatePasswordMeter(); 
+      }
+      authModal.style.display = 'flex';
+      setTimeout(() => authModal.classList.add('active'), 10);
+    }
+
+    function closeModal() {
+      authModal.classList.remove('active');
+      setTimeout(() => authModal.style.display = 'none', 300);
+    }
+
+    authModal.addEventListener('click', (e) => {
+      if (e.target === authModal) closeModal();
+    });
+
+    
+    authForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!supabaseClient) {
+        showToast("¡Falta configurar Supabase! Revisa el código.");
+        return;
+      }
+
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      btnSubmit.disabled = true;
+      const originalText = btnSubmit.textContent;
+      btnSubmit.textContent = 'Procesando...';
+
+      try {
+        let error = null;
+        let data = null;
+
+        if (currentAuthMode === 'signup') {
+          
+          const hasLength = password.length >= 8;
+          const hasUpper = /[A-Z]/.test(password);
+          const hasNumber = /[0-9]/.test(password);
+          const hasSpecial = /[^A-Za-z0-9]/.test(password);
+
+          if (!hasLength || !hasUpper || !hasNumber || !hasSpecial) {
+            btnSubmit.disabled = false;
+            btnSubmit.textContent = originalText;
+            showToast("La contraseña debe tener mínimo 8 caracteres, 1 mayúscula, 1 número y 1 símbolo.");
+            return;
+          }
+
+          const result = await supabaseClient.auth.signUp({
+            email, password, options: { data: { full_name: name } }
+          });
+          error = result.error; data = result.data;
+        } else {
+          const result = await supabaseClient.auth.signInWithPassword({ email, password });
+          error = result.error; data = result.data;
+        }
+
+        if (error) {
+          showToast(error.message);
+        } else {
+          isLoggedIn = true;
+          closeModal();
+          const userName = data.user?.user_metadata?.full_name || 'Usuario';
+          updateUIForLoggedInUser(userName);
+
+          if (btnOrder.disabled === false || btnOrder.classList.contains('loading')) {
+            processOrder();
+          }
+        }
+      } catch (err) {
+        console.error(err);
+        showToast('Error conectando al servidor.');
+      } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.textContent = originalText;
+      }
+    });
+
+    
+    async // Con esta función verifico si el usuario ya inició sesión previamente
+function checkSession() {
+      if (!supabaseClient) return;
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session) {
+          isLoggedIn = true;
+          const userName = session.user?.user_metadata?.full_name || 'Usuario';
+          updateUIForLoggedInUser(userName);
+        }
+
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+          if (event === 'SIGNED_OUT') location.reload();
+        });
+      } catch (err) {
+        console.error('Error comprobando sesión:', err);
+      }
+    }
+
+    
+    // Para cerrar la sesión de forma segura y borrar el token local
+async function logout() {
+      if (!supabaseClient) return;
+      try {
+        await supabaseClient.auth.signOut();
+      } catch (err) {
+        console.error('Error cerrando sesión:', err);
+      }
+    }
+
+    
+    function updateUIForLoggedInUser(userName) {
+      if (defaultBadge) defaultBadge.style.display = 'none';
+      authButtonsContainer.innerHTML = `
+        <span style="color: var(--c-light); font-size: 0.85rem;">Hola, ${userName}</span>
+        <button class="btn-auth" onclick="logout()" style="background: transparent; color: var(--c-mid); border: 1px solid var(--c-dark); padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.75rem; cursor: pointer;">Cerrar sesión</button>
+      `;
+    }
+
+    window.addEventListener('DOMContentLoaded', checkSession);
+
+    
+    async function loginWithGoogle() {
+      if (!supabaseClient) return showToast("Supabase no configurado");
+      const { data, error } = await supabaseClient.auth.signInWithOAuth({ provider: 'google' });
+      if (error) showToast("Error con Google: " + error.message);
+    }
+
+    let currentProductId = null;
+
+    
+    
+    
+    async function loadDynamicProduct() {
+      const urlParams = new URLSearchParams(window.location.search);
+      currentProductId = urlParams.get('product');
+      
+      if (!currentProductId || !supabaseClient) return;
+
+      const { data: product, error } = await supabaseClient
+        .from('products')
+        .select('*')
+        .eq('id', currentProductId)
+        .single();
+
+      if (error || !product) {
+        console.error("Error cargando producto:", error);
+        document.getElementById('dynProductTitle').textContent = "Producto no encontrado";
+        return;
+      }
+
+      
+      document.getElementById('dynProductTitle').textContent = product.name;
+      document.getElementById('dynProductDesc').textContent = product.description || '';
+      document.getElementById('dynProductPrice').textContent = `Desde $${product.price} USD`;
+
+      
+      if (product.model_3d_url) {
+        const viewer = document.getElementById('tshirtModel');
+        if (viewer) {
+          viewer.setAttribute('src', product.model_3d_url);
+        }
+      }
+    }
+    
+    
+    window.addEventListener('DOMContentLoaded', loadDynamicProduct);
+
+    
+    function updatePasswordMeter() {
+      const pwd = passwordInput.value;
+      let strength = 0;
+
+      const hasLength = pwd.length >= 8;
+      const hasUpper = /[A-Z]/.test(pwd);
+      const hasNumber = /[0-9]/.test(pwd);
+      const hasSpecial = /[^A-Za-z0-9]/.test(pwd);
+
+      if (pwd.length > 0) {
+        if (hasLength) strength += 1;
+        if (hasUpper) strength += 1;
+        if (hasNumber) strength += 1;
+        if (hasSpecial) strength += 1;
+      }
+
+      let width = '0%';
+      let color = 'transparent';
+      let text = 'Mínimo 8 caracteres, 1 mayúscula, 1 número y 1 símbolo.';
+
+      if (pwd.length > 0) {
+        if (strength === 0 || pwd.length < 6) {
+          width = '25%';
+          color = '#C0392B'; 
+          text = 'Débil (Faltan requisitos)';
+        } else if (strength === 1 || strength === 2) {
+          width = '50%';
+          color = '#F39C12'; 
+          text = 'Regular (Añade símbolos o mayúsculas)';
+        } else if (strength === 3) {
+          width = '75%';
+          color = '#27AE60'; 
+          text = 'Buena';
+        } else if (strength >= 4) {
+          width = '100%';
+          color = '#27AE60'; 
+          text = 'Fuerte (Segura)';
+        }
+      }
+
+      pwdMeterFill.style.width = width;
+      pwdMeterFill.style.backgroundColor = color;
+      pwdMeterText.textContent = text;
+    }
+
+    passwordInput.addEventListener('input', updatePasswordMeter);
+
+  </script>
+<script src="toast.js?v=3"></script>`n</body>
+
+</html>
+
+
+

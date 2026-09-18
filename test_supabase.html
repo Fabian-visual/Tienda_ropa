@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Configuración de metadatos y fuentes que incluí para el estilo visual --><title>Test Supabase</title></head>
+<body>
+<h1>Test de Supabase</h1>
+<p id="result">Cargando...</p>
+
+<!-- SDK de Supabase que importé para conectar mi backend -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const resultEl = document.getElementById('result');
+  
+  if (typeof window.supabase !== 'undefined') {
+    resultEl.textContent = '✅ Supabase SDK cargó correctamente. window.supabase existe.';
+    resultEl.style.color = 'green';
+    
+    try {
+      const client = window.supabase.createClient(
+        'https://kynysaefypgugdvcfpzj.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5bnlzYWVmeXBndWdkdmNmcHpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5MTEwODgsImV4cCI6MjEwNDQ4NzA4OH0.GsC_nggMng_-5-3K2T1rApgctiyWcVXAeS7uw5H2ftU'
+      );
+      resultEl.textContent += ' | ✅ createClient funcionó.';
+    } catch (e) {
+      resultEl.textContent += ' | ❌ createClient falló: ' + e.message;
+    }
+  } else {
+    resultEl.textContent = '❌ Supabase SDK NO cargó. window.supabase es undefined.';
+    resultEl.style.color = 'red';
+  }
+</script>
+<script src="toast.js?v=3"></script>`n</body>
+</html>
+
+
+
