@@ -531,7 +531,7 @@
                 <option value="+86">🇨🇳 +86</option>
                 <option value="+91">🇮🇳 +91</option>
               </select>
-              <input type="tel" id="profPhone" placeholder="412 1234567" style="flex: 1;">
+              <input type="tel" id="profPhone" placeholder="412 1234567" style="flex: 1;" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
             </div>
           </div>
           <div class="form-group">
