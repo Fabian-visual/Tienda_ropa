@@ -13,6 +13,7 @@
   <!-- SDK de Supabase que importé para conectar mi backend -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
+  <script src="logger.js"></script>
   <script src="cart.js?v=3"></script>
 
   <style>
@@ -661,7 +662,28 @@
         window.location.href = 'index.html';
         return;
       }
+      
       currentUser = session.user;
+
+      // Lógica de "Ver como Usuario" (Impersonation)
+      const urlParams = new URLSearchParams(window.location.search);
+      const impersonateId = urlParams.get('impersonate_user_id');
+      const impersonateName = urlParams.get('impersonate_name');
+
+      if (impersonateId) {
+        // Verificar que el usuario real sea admin
+        const { data: adminProfile } = await supabaseClient.from('profiles').select('role').eq('id', session.user.id).single();
+        if (adminProfile && adminProfile.role === 'admin') {
+          // Cambiamos el currentUser para engañar a las funciones de abajo
+          currentUser = { id: impersonateId };
+          
+          // Añadimos la barra amarilla de advertencia
+          const warningBar = document.createElement('div');
+          warningBar.style = "background: var(--c-gold); color: #000; text-align: center; padding: 0.5rem; font-weight: bold; position: sticky; top: 0; z-index: 9999;";
+          warningBar.innerHTML = `🚨 ESTÁS VIENDO EL PERFIL COMO: ${impersonateName || 'Cliente'} <a href="profile.html" style="margin-left: 1rem; text-decoration: underline; color: #000;">Salir de esta vista</a>`;
+          document.body.prepend(warningBar);
+        }
+      }
 
       loadProfileData();
       loadOrders();

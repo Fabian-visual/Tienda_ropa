@@ -498,3 +498,25 @@ REVOKE EXECUTE ON FUNCTION public.create_order(JSONB, VARCHAR, VARCHAR, VARCHAR,
 REVOKE EXECUTE ON FUNCTION public.create_order(JSONB, VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR) FROM anon;
 GRANT EXECUTE ON FUNCTION public.create_order(JSONB, VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR) TO authenticated;
 
+
+-- ==========================================
+-- TABLA DE REGISTRO DE ERRORES (SYSTEM LOGS)
+-- ==========================================
+CREATE TABLE IF NOT EXISTS public.system_logs (
+    id SERIAL PRIMARY KEY,
+    user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+    error_message TEXT NOT NULL,
+    error_stack TEXT,
+    url VARCHAR(500),
+    user_agent TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Modifico la estructura o habilito las políticas de seguridad (RLS)
+ALTER TABLE public.system_logs ENABLE ROW LEVEL SECURITY;
+
+-- Cualquiera puede insertar errores (incluso usuarios no autenticados)
+CREATE POLICY "Anyone can insert logs" ON public.system_logs FOR INSERT WITH CHECK (true);
+
+-- Solo el administrador puede leer los errores
+CREATE POLICY "Admin can view logs" ON public.system_logs FOR SELECT USING (auth.email() = 'fabianvasquezp13@gmail.com');

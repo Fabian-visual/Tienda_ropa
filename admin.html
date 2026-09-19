@@ -17,6 +17,7 @@
   <!-- SDK de Supabase que importé para conectar mi backend -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
+  <script src="logger.js"></script>
   
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -671,11 +672,12 @@
                 <th>Teléfono</th>
                 <th>Dirección</th>
                 <th>Registrado</th>
+                <th>Acción</th>
               </tr>
             </thead>
             <tbody id="clientsTableBody">
               <tr>
-                <td colspan="5" style="text-align:center; padding: 2rem;">Cargando clientes...</td>
+                <td colspan="6" style="text-align:center; padding: 2rem;">Cargando clientes...</td>
               </tr>
             </tbody>
           </table>
@@ -1872,8 +1874,8 @@ async function logout() {
       const tbody = document.getElementById('clientsTableBody');
       const { data, error } = await supabaseClient.from('profiles').select('*').order('created_at', { ascending: false });
 
-      if (error) { tbody.innerHTML = `<tr><td colspan="5" style="color:var(--c-danger);text-align:center;">Error: ${error.message}</td></tr>`; return; }
-      if (data.length === 0) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No hay clientes aún.</td></tr>`; return; }
+      if (error) { tbody.innerHTML = `<tr><td colspan="6" style="color:var(--c-danger);text-align:center;">Error: ${error.message}</td></tr>`; return; }
+      if (data.length === 0) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No hay clientes aún.</td></tr>`; return; }
 
       tbody.innerHTML = '';
       data.forEach(client => {
@@ -1885,6 +1887,9 @@ async function logout() {
           <td>${client.phone || '-'}</td>
           <td>${client.address || '-'}</td>
           <td>${date}</td>
+          <td>
+            <button class="btn-outline" onclick="window.open('profile.html?impersonate_user_id=${client.id}&impersonate_name=${encodeURIComponent(client.full_name || 'Sin nombre')}', '_blank')" style="font-size: 0.8rem; padding: 0.3rem 0.6rem;">👁️ Ver como</button>
+          </td>
         `;
         tbody.appendChild(tr);
       });
