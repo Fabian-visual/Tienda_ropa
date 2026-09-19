@@ -295,6 +295,8 @@ DECLARE
     v_quantity INTEGER;
     v_order_id INTEGER;
     v_order_code VARCHAR(20);
+    v_product_name VARCHAR(255);
+    v_current_stock INTEGER;
 BEGIN
     IF auth.uid() IS NULL THEN
         RAISE EXCEPTION 'Not authenticated';
@@ -319,7 +321,12 @@ BEGIN
         WHERE id = v_product_id AND stock >= v_quantity;
 
         IF NOT FOUND THEN
-            RAISE EXCEPTION 'No hay stock suficiente para el producto ID %', v_product_id;
+            SELECT name, stock INTO v_product_name, v_current_stock FROM public.products WHERE id = v_product_id;
+            IF v_current_stock = 0 THEN
+                RAISE EXCEPTION 'El producto "%" se ha agotado por completo', v_product_name;
+            ELSE
+                RAISE EXCEPTION 'Solo quedan % unidades en stock de "%", pero intentaste comprar %', v_current_stock, v_product_name, v_quantity;
+            END IF;
         END IF;
 
         v_total_amount := v_total_amount + (v_item_price * v_quantity);
@@ -419,84 +426,6 @@ REVOKE EXECUTE ON FUNCTION public.request_refund(INTEGER, TEXT, TEXT) FROM anon;
 GRANT EXECUTE ON FUNCTION public.request_refund(INTEGER, TEXT, TEXT) TO authenticated;
 
 
-CREATE OR REPLACE FUNCTION public.create_order(
-    p_items JSONB,
-    p_payment_method VARCHAR,
-    p_payment_reference VARCHAR,
-    p_customer_name VARCHAR,
-    p_customer_email VARCHAR,
-    p_payment_receipt_url VARCHAR DEFAULT NULL
-)
-RETURNS JSONB
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = public
-AS $$
-DECLARE
-    item JSONB;
-    v_total_amount DECIMAL(10,2) := 0.00;
-    v_item_price DECIMAL(10,2);
-    v_product_id INTEGER;
-    v_quantity INTEGER;
-    v_order_id INTEGER;
-BEGIN
-    IF auth.uid() IS NULL THEN
-        RAISE EXCEPTION 'Not authenticated';
-    END IF;
-
-    FOR item IN SELECT * FROM jsonb_array_elements(p_items)
-    LOOP
-        v_product_id := (item->>'product_id')::INTEGER;
-        v_quantity := COALESCE((item->>'quantity')::INTEGER, 1);
-        
-        SELECT price INTO v_item_price FROM public.products WHERE id = v_product_id FOR UPDATE;
-        
-        IF v_item_price IS NULL THEN
-            RAISE EXCEPTION 'Producto con ID % no encontrado', v_product_id;
-        END IF;
-
-        
-        UPDATE public.products 
-        SET stock = stock - v_quantity 
-        WHERE id = v_product_id AND stock >= v_quantity;
-
-        IF NOT FOUND THEN
-            RAISE EXCEPTION 'No hay stock suficiente para el producto ID %', v_product_id;
-        END IF;
-
-        v_total_amount := v_total_amount + (v_item_price * v_quantity);
-    END LOOP;
-
-    INSERT INTO public.orders (
-        user_id,
-        customer_name,
-        customer_email,
-        items,
-        total_amount,
-        payment_method,
-        payment_reference,
-        payment_receipt_url,
-        status
-    ) VALUES (
-        auth.uid(),
-        p_customer_name,
-        p_customer_email,
-        p_items,
-        v_total_amount,
-        p_payment_method,
-        p_payment_reference,
-        p_payment_receipt_url,
-        'pending'
-    ) RETURNING id INTO v_order_id;
-
-    RETURN jsonb_build_object('id', v_order_id, 'total_amount', v_total_amount);
-END;
-$$;
-
-
-REVOKE EXECUTE ON FUNCTION public.create_order(JSONB, VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR) FROM public;
-REVOKE EXECUTE ON FUNCTION public.create_order(JSONB, VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR) FROM anon;
-GRANT EXECUTE ON FUNCTION public.create_order(JSONB, VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR) TO authenticated;
 
 
 -- ==========================================
