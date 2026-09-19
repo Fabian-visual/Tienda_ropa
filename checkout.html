@@ -234,10 +234,32 @@
     }
 
     
-    window.renderCheckout = function() {
-      const cart = getCart();
+    window.renderCheckout = async function() {
+      let cart = getCart();
       const container = document.getElementById('cartContainer');
       
+      if (cart.length > 0 && typeof supabaseClient !== 'undefined') {
+        let changed = false;
+        for (let item of cart) {
+          if (item.type === 'regular' && item.product_id) {
+            const { data: product } = await supabaseClient.from('products').select('stock').eq('id', item.product_id).single();
+            if (product && item.quantity > product.stock) {
+              item.quantity = product.stock;
+              changed = true;
+            }
+          }
+        }
+        
+        const newCart = cart.filter(i => i.quantity > 0);
+        if (newCart.length !== cart.length) changed = true;
+        
+        if (changed) {
+          saveCart(newCart);
+          showToast("El inventario ha cambiado. Ajustamos tu carrito al stock disponible.", "error");
+          cart = newCart;
+        }
+      }
+
       if (cart.length === 0) {
         container.innerHTML = '<p style="padding: 2rem 0; color: var(--c-mid);">Tu carrito está vacío.</p>';
         document.getElementById('btnCheckout').disabled = true;

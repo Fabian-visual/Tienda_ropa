@@ -27,6 +27,21 @@ async function addToCart(productId, name, price, imageUrl) {
       if (typeof openModal === 'function') openModal('login');
       return;
     }
+
+    // Validar el stock antes de meterlo al carrito
+    const { data: product, error } = await supabaseClient.from('products').select('stock').eq('id', productId).single();
+    if (!error && product) {
+       const cart = getCart();
+       const existingItem = cart.find(item => item.product_id === productId && item.type === 'regular');
+       const currentQty = existingItem ? existingItem.quantity : 0;
+       
+       if (currentQty + 1 > product.stock) {
+           if (typeof showToast === 'function') {
+               showToast(`No puedes añadir más. Solo quedan ${product.stock} unidades de este producto.`, "error");
+           }
+           return; // Bloquea la acción
+       }
+    }
   }
 
   const cart = getCart();
@@ -87,12 +102,26 @@ let cart = getCart();
 }
 
 
-function updateCartItemQuantity(itemId, newQuantity) {
+async function updateCartItemQuantity(itemId, newQuantity) {
   if (newQuantity < 1) return; 
   
   const cart = getCart();
   const item = cart.find(i => i.id === itemId);
+  
   if (item) {
+    // Validar el stock antes de incrementar
+    if (typeof supabaseClient !== 'undefined' && supabaseClient && item.type === 'regular') {
+      const { data: product, error } = await supabaseClient.from('products').select('stock').eq('id', item.product_id).single();
+      if (!error && product) {
+         if (newQuantity > product.stock) {
+             if (typeof showToast === 'function') {
+                 showToast(`Límite alcanzado: Solo hay ${product.stock} unidades en inventario.`, "error");
+             }
+             return; // Bloquea la acción
+         }
+      }
+    }
+
     item.quantity = newQuantity;
     saveCart(cart);
     if (window.renderCheckout) {
