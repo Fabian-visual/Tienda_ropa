@@ -493,7 +493,7 @@
         </div>
 
 
-        <div class="profile-card">
+        <div class="profile-card" id="updateDataCard">
           <h2 style="font-family:var(--ff-display); font-size:1.5rem; margin-bottom:1.5rem;">Actualizar Datos</h2>
           <div class="form-group">
             <label>Nombre Completo</label>
@@ -542,7 +542,7 @@
           <p id="profStatus" style="margin-top: 1rem; font-size: 0.85rem; color: var(--c-gold);"></p>
         </div>
         
-        <div class="profile-card" style="margin-top: 2rem;">
+        <div class="profile-card" id="changePasswordCard" style="margin-top: 2rem;">
           <h2 style="font-family:var(--ff-display); font-size:1.5rem; margin-bottom:1.5rem;">Cambiar Contraseña</h2>
           <div class="form-group">
             <label>Nueva Contraseña</label>
@@ -682,6 +682,12 @@
           warningBar.style = "background: var(--c-gold); color: #000; text-align: center; padding: 0.5rem; font-weight: bold; position: sticky; top: 0; z-index: 9999;";
           warningBar.innerHTML = `🚨 ESTÁS VIENDO EL PERFIL COMO: ${impersonateName || 'Cliente'} <a href="profile.html" style="margin-left: 1rem; text-decoration: underline; color: #000;">Salir de esta vista</a>`;
           document.body.prepend(warningBar);
+          
+          // Ocultar formularios de edición por seguridad
+          const updateDataCard = document.getElementById('updateDataCard');
+          const changePasswordCard = document.getElementById('changePasswordCard');
+          if (updateDataCard) updateDataCard.style.display = 'none';
+          if (changePasswordCard) changePasswordCard.style.display = 'none';
         }
       }
 
