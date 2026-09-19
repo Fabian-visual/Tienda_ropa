@@ -515,6 +515,7 @@
         <button class="nav-btn" onclick="switchTab('categories')" id="btn-categories">Categorías</button>
         <button class="nav-btn" onclick="switchTab('discounts')" id="btn-discounts">Descuentos</button>
         <button class="nav-btn" onclick="switchTab('clients')" id="btn-clients">Clientes</button>
+        <button class="nav-btn" onclick="switchTab('logs')" id="btn-logs">Logs del Sistema</button>
       </nav>
       <div class="sidebar-footer">
         <span id="adminName">Cargando...</span>
@@ -705,6 +706,31 @@
             <tbody id="discountsTableBody">
               <tr>
                 <td colspan="6" style="text-align:center; padding: 2rem;">Cargando descuentos...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="tab-logs" class="tab-content">
+        <div class="flex-between">
+          <h2>Logs del Sistema</h2>
+          <button class="btn-outline" onclick="loadLogs()">Actualizar</button>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Usuario (ID)</th>
+                <th>Mensaje de Error</th>
+                <th>URL</th>
+                <th>User Agent</th>
+              </tr>
+            </thead>
+            <tbody id="logsTableBody">
+              <tr>
+                <td colspan="5" style="text-align:center; padding: 2rem;">Cargando logs...</td>
               </tr>
             </tbody>
           </table>
@@ -1131,8 +1157,9 @@ async function logout() {
       if (tabId === 'orders') loadOrders();
       if (tabId === 'catalog') { loadCategoriesForSelect(); loadProducts(); }
       if (tabId === 'categories') loadCategories();
-      if (tabId === 'discounts') loadDiscounts();
       if (tabId === 'clients') loadClients();
+      if (tabId === 'discounts') loadDiscounts();
+      if (tabId === 'logs') loadLogs();
     }
 
     
@@ -1895,6 +1922,27 @@ async function logout() {
       });
     }
 
+    async function loadLogs() {
+      const tbody = document.getElementById('logsTableBody');
+      const { data, error } = await supabaseClient.from('system_logs').select('*').order('created_at', { ascending: false }).limit(50);
+
+      if (error) { tbody.innerHTML = `<tr><td colspan="5" style="color:var(--c-danger);text-align:center;">Error: ${error.message}</td></tr>`; return; }
+      if (data.length === 0) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No hay errores registrados. ¡Todo perfecto!</td></tr>`; return; }
+
+      tbody.innerHTML = '';
+      data.forEach(log => {
+        const date = new Date(log.created_at).toLocaleString('es-ES');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${date}</td>
+          <td>${log.user_id ? log.user_id : 'Anónimo'}</td>
+          <td style="color:var(--c-danger); max-width: 300px; word-wrap: break-word;">${escapeHTML(log.error_message)}</td>
+          <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${escapeHTML(log.url)}">${escapeHTML(log.url)}</td>
+          <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${escapeHTML(log.user_agent)}">${escapeHTML(log.user_agent)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
     
     async function loadDiscounts() {
       const tbody = document.getElementById('discountsTableBody');
