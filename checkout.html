@@ -4,13 +4,14 @@
   <!-- Configuración de metadatos y fuentes que incluí para el estilo visual -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Checkout - OVERMARK Studio</title>
+  <title>Checkout - OVERMARK</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   
   
   <!-- SDK de Supabase que importé para conectar mi backend -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
   
   <!-- Importé el SDK de PayPal para procesar los pagos de mis clientes -->
 <script src="https://www.paypal.com/sdk/js?client-id=AbazeYo4SKmzVv-KHHPZw_eRUBiGbqDhqMtfxqQV8Othk5DFj6OaW-en8cKSJ3i7IZEZSpHfErr3racq&currency=USD"></script>
@@ -191,8 +192,8 @@
 
   <script>
     // Aquí pongo mi URL de Supabase para conectarme a la base de datos
-    const SUPABASE_URL = 'https://kynysaefypgugdvcfpzj.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5bnlzYWVmeXBndWdkdmNmcHpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5MTEwODgsImV4cCI6MjEwNDQ4NzA4OH0.GsC_nggMng_-5-3K2T1rApgctiyWcVXAeS7uw5H2ftU';
+    
+    
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     function escapeHTML(str) {
@@ -267,7 +268,7 @@
 
         let metaData = '';
         if (item.type === 'custom') {
-          metaData = `Overmark Custom<br>Style: 3D Config<br>Talla: ${item.size}`;
+          metaData = `Overmark Custom<br>Estilo: Personalizado<br>Talla: ${item.size}`;
         } else {
           metaData = `Overmark Essential<br>Style: Standard`;
         }

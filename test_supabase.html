@@ -8,6 +8,7 @@
 
 <!-- SDK de Supabase que importé para conectar mi backend -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
 <script>
   const resultEl = document.getElementById('result');
   
@@ -17,8 +18,8 @@
     
     try {
       const client = window.supabase.createClient(
-        'https://kynysaefypgugdvcfpzj.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5bnlzYWVmeXBndWdkdmNmcHpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5MTEwODgsImV4cCI6MjEwNDQ4NzA4OH0.GsC_nggMng_-5-3K2T1rApgctiyWcVXAeS7uw5H2ftU'
+        '%VITE_SUPABASE_URL%',
+        '%VITE_SUPABASE_ANON_KEY%'
       );
       resultEl.textContent += ' | ✅ createClient funcionó.';
     } catch (e) {

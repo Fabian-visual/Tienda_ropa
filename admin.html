@@ -5,7 +5,7 @@
   <!-- Configuración de metadatos y fuentes que incluí para el estilo visual -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin - OVERMARK Studio</title>
+  <title>Admin - OVERMARK</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -16,6 +16,7 @@
   
   <!-- SDK de Supabase que importé para conectar mi backend -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
   
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -618,7 +619,7 @@
                 <th>Categoría</th>
                 <th>Precio ($)</th>
                 <th>Stock</th>
-                <th>3D</th>
+                <th>Personalizable</th>
                 <th>Acción</th>
               </tr>
             </thead>
@@ -746,14 +747,22 @@
           <input type="file" id="pImage" accept="image/*" />
         </div>
         <div class="form-group" style="display:flex; align-items:center;">
-          <input type="checkbox" id="p3D"
-            onchange="document.getElementById('modelUploadGroup').style.display = this.checked ? 'block' : 'none';" />
-          <label style="margin:0;">¿Permite Personalizador 3D?</label>
+          <input type="checkbox" id="pCustomizable" onchange="document.getElementById('customImagesGroup').style.display = this.checked ? 'block' : 'none';" />
+          <label style="margin:0;">¿Permite Personalización?</label>
         </div>
-        <div class="form-group" id="modelUploadGroup" style="display:none;">
-          <label>Archivo de Modelo 3D (.glb)</label>
-          <input type="file" id="pModel3D" accept=".glb" />
+        <div id="customImagesGroup" style="display:none; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px; margin-top: 1rem; margin-bottom: 1rem;">
+          <label style="color: var(--c-gold); font-size: 0.9rem; margin-bottom: 1rem;">Imágenes para Personalizador (PNG sin fondo)</label>
+          <div class="form-group">
+            <label>Frente de la prenda</label>
+            <input type="file" id="pCustomFront" accept="image/png" />
+          </div>
+          <div class="form-group">
+            <label>Espalda de la prenda (Opcional)</label>
+            <input type="file" id="pCustomBack" accept="image/png" />
+          </div>
         </div>
+
+        
 
         <div class="modal-actions">
           <button type="button" class="btn-outline" onclick="closeProductModal()">Cancelar</button>
@@ -1047,8 +1056,8 @@
 
     
     // Aquí pongo mi URL de Supabase para conectarme a la base de datos
-    const SUPABASE_URL = 'https://kynysaefypgugdvcfpzj.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5bnlzYWVmeXBndWdkdmNmcHpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5MTEwODgsImV4cCI6MjEwNDQ4NzA4OH0.GsC_nggMng_-5-3K2T1rApgctiyWcVXAeS7uw5H2ftU';
+    
+    
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let salesChart = null;
@@ -1199,7 +1208,7 @@ async function logout() {
           <td><strong>${c.name}</strong></td>
           <td>${date}</td>
           <td>
-            <button class="btn-primary" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; margin-right: 0.5rem;" onclick="editCategory(${c.id}, '${c.name.replace(/'/g, "\\'")}')">Editar</button>
+            <button class="btn-primary" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; margin-right: 0.5rem;" onclick="editCategory(${c.id}, '${c.name.replace(/'/g, "'")}')">Editar</button>
             <button class="btn-danger" onclick="deleteCategory(${c.id})">Eliminar</button>
           </td>
         `;
@@ -1616,7 +1625,7 @@ async function logout() {
       tbody.innerHTML = '';
       data.forEach(p => {
         const img = p.image_url ? `<img src="${p.image_url}" width="40" height="40" style="border-radius:4px; object-fit:cover;">` : '-';
-        const is3D = p.has_3d_support ? '<span style="color:var(--c-primary)">Sí</span>' : 'No';
+        const isCustomizable = p.is_customizable ? '<span style="color:var(--c-primary)">Sí</span>' : 'No';
         const catName = p.category ? p.category.name : '<span style="color:var(--c-text-sec)">Sin Categoría</span>';
 
         const actionBtn = p.is_active 
@@ -1630,7 +1639,7 @@ async function logout() {
           <td>${catName}</td>
           <td>$${p.price}</td>
           <td>${p.stock}</td>
-          <td>${is3D}</td>
+          <td>${isCustomizable}</td>
           <td>
             <button class="btn-outline" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; margin-right: 0.5rem;" onclick="openVariantsModal(${p.id}, '${p.name.replace(/'/g, "&#39;")}')">Variantes</button>
             <button class="btn-primary" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; margin-right: 0.5rem;" onclick="editProduct(${p.id})">Editar</button>
@@ -1728,8 +1737,8 @@ async function logout() {
       document.getElementById('pDesc').value = data.description || '';
       document.getElementById('pPrice').value = data.price;
       document.getElementById('pStock').value = data.stock;
-      document.getElementById('p3D').checked = data.has_3d_support;
-      document.getElementById('modelUploadGroup').style.display = data.has_3d_support ? 'block' : 'none';
+      document.getElementById('pCustomizable').checked = data.is_customizable;
+      document.getElementById('customImagesGroup').style.display = data.is_customizable ? 'block' : 'none';
 
       document.getElementById('productModal').classList.add('active');
     }
@@ -1745,12 +1754,14 @@ async function logout() {
         const desc = document.getElementById('pDesc').value;
         const price = document.getElementById('pPrice').value;
         const stock = document.getElementById('pStock').value;
-        const is3D = document.getElementById('p3D').checked;
+        const isCustomizable = document.getElementById('pCustomizable').checked;
         const fileInput = document.getElementById('pImage');
-        const modelInput = document.getElementById('pModel3D');
+        const customFrontInput = document.getElementById('pCustomFront');
+        const customBackInput = document.getElementById('pCustomBack');
 
         let imageUrl = undefined;
-        let modelUrl = undefined;
+        let customFrontUrl = undefined;
+        let customBackUrl = undefined;
 
         if (fileInput.files.length > 0) {
           const file = fileInput.files[0];
@@ -1762,18 +1773,29 @@ async function logout() {
           imageUrl = data.publicUrl;
         }
 
-        if (is3D && modelInput.files.length > 0) {
-          const file = modelInput.files[0];
-          const fileName = `model_${Date.now()}.glb`;
-          const { error: uploadError } = await supabaseClient.storage.from('3d_models').upload(fileName, file);
-          if (uploadError) throw uploadError;
-          const { data } = supabaseClient.storage.from('3d_models').getPublicUrl(fileName);
-          modelUrl = data.publicUrl;
+        if (isCustomizable) {
+          if (customFrontInput.files.length > 0) {
+            const file = customFrontInput.files[0];
+            const fileName = `custom_front_${Date.now()}.png`;
+            const { error: uploadError } = await supabaseClient.storage.from('catalog_images').upload(fileName, file);
+            if (uploadError) throw uploadError;
+            const { data } = supabaseClient.storage.from('catalog_images').getPublicUrl(fileName);
+            customFrontUrl = data.publicUrl;
+          }
+          if (customBackInput.files.length > 0) {
+            const file = customBackInput.files[0];
+            const fileName = `custom_back_${Date.now()}.png`;
+            const { error: uploadError } = await supabaseClient.storage.from('catalog_images').upload(fileName, file);
+            if (uploadError) throw uploadError;
+            const { data } = supabaseClient.storage.from('catalog_images').getPublicUrl(fileName);
+            customBackUrl = data.publicUrl;
+          }
         }
 
-        const productData = { name, category_id, description: desc, price, stock, has_3d_support: is3D };
+        const productData = { name, category_id, description: desc, price, stock, is_customizable: isCustomizable };
         if (imageUrl !== undefined) productData.image_url = imageUrl;
-        if (modelUrl !== undefined) productData.model_3d_url = modelUrl;
+        if (customFrontUrl !== undefined) productData.custom_front_url = customFrontUrl;
+        if (customBackUrl !== undefined) productData.custom_back_url = customBackUrl;
 
         let dbError;
         if (editingProductId) {

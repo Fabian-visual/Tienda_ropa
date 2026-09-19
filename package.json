@@ -1,0 +1,24 @@
+{
+  "name": "pagina-wed",
+  "version": "1.0.0",
+  "description": "",
+  "main": "cart.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fabian-visual/Tienda_ropa.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Fabian-visual/Tienda_ropa/issues"
+  },
+  "homepage": "https://github.com/Fabian-visual/Tienda_ropa#readme",
+  "devDependencies": {
+    "vite": "^8.3.0"
+  }
+}

@@ -5,30 +5,30 @@
   <!-- Configuración de metadatos y fuentes que incluí para el estilo visual -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Personalizador — OVERMARK Studio</title>
+  <title>Personalizar — OVERMARK</title>
 
-  
-  
 
-  
+
+
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600&display=swap"
     rel="stylesheet" />
 
-  
-  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
 
-  
+
+
+
   <!-- SDK de Supabase que importé para conectar mi backend -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
 
-  
+
   <script src="cart.js?v=3"></script>
 
   <style>
-    
     :root {
       --c-black: #0A0A0A;
       --c-carbon: #1E1E1E;
@@ -52,7 +52,7 @@
       --transition: 0.25s ease;
     }
 
-    
+
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -239,7 +239,7 @@
     .pwd-meter-container {
       margin-top: 0.5rem;
       display: none;
-      
+
     }
 
     .pwd-meter-bar {
@@ -261,7 +261,7 @@
       color: var(--c-mid);
     }
 
-    
+
     *,
     *::before,
     *::after {
@@ -278,7 +278,7 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    
+
     header {
       display: flex;
       align-items: center;
@@ -334,7 +334,7 @@
       text-transform: uppercase;
     }
 
-    
+
     main {
       display: grid;
       grid-template-columns: 1fr 400px;
@@ -342,43 +342,29 @@
       min-height: calc(100vh - 65px);
     }
 
-    
+
     .preview-panel {
       background: var(--c-carbon);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 3rem 2rem;
+      padding: 2rem;
       position: relative;
     }
 
     .preview-label {
-      position: absolute;
-      top: 1.5rem;
-      left: 2rem;
-      font-size: 0.7rem;
-      letter-spacing: 0.2em;
-      color: var(--c-mid);
-      text-transform: uppercase;
+      display: none;
     }
 
-    
+
     .tshirt-wrapper {
       position: relative;
       width: 100%;
-      height: 500px;
-      max-width: 480px;
       user-select: none;
     }
 
-    model-viewer {
-      width: 100%;
-      height: 100%;
-      --poster-color: transparent;
-    }
 
-    
     .zone-controls {
       position: absolute;
       bottom: 1rem;
@@ -415,7 +401,7 @@
       color: var(--c-black);
     }
 
-    
+
     .color-switcher {
       position: absolute;
       bottom: 1.5rem;
@@ -475,7 +461,7 @@
       background: #4A4A2E;
     }
 
-    
+
     .controls-panel {
       background: var(--c-black);
       border-left: 1px solid var(--c-dark);
@@ -486,7 +472,7 @@
       overflow-y: auto;
     }
 
-    
+
     .product-title {
       font-family: var(--ff-display);
       font-size: 1.6rem;
@@ -503,7 +489,7 @@
       letter-spacing: 0.05em;
     }
 
-    
+
     .price-tag {
       font-size: 1.1rem;
       color: var(--c-gold);
@@ -511,13 +497,13 @@
       margin-top: 0.25rem;
     }
 
-    
+
     .section-divider {
       height: 1px;
       background: var(--c-dark);
     }
 
-    
+
     .section-label {
       font-size: 0.7rem;
       letter-spacing: 0.15em;
@@ -526,7 +512,7 @@
       margin-bottom: 0.75rem;
     }
 
-    
+
     .upload-zone {
       border: 1.5px dashed var(--c-dark);
       border-radius: var(--radius-md);
@@ -543,7 +529,7 @@
       background: rgba(200, 169, 110, 0.04);
     }
 
-    
+
     #fileInput {
       position: absolute;
       inset: 0;
@@ -574,7 +560,7 @@
       margin-top: 0.5rem;
     }
 
-    
+
     .thumb-preview {
       display: none;
       align-items: center;
@@ -630,7 +616,7 @@
       color: var(--c-danger);
     }
 
-    
+
     .slider-group {
       display: flex;
       flex-direction: column;
@@ -688,7 +674,7 @@
       font-variant-numeric: tabular-nums;
     }
 
-    
+
     .side-tabs {
       display: flex;
       gap: 1rem;
@@ -717,7 +703,7 @@
       border-color: var(--c-gold);
     }
 
-    
+
     .size-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -750,7 +736,7 @@
       font-weight: 600;
     }
 
-    
+
     textarea {
       width: 100%;
       background: var(--c-carbon);
@@ -774,7 +760,7 @@
       border-color: var(--c-gold);
     }
 
-    
+
     .status-msg {
       font-size: 0.78rem;
       padding: 0.6rem 0.9rem;
@@ -796,7 +782,7 @@
       color: #2ECC71;
     }
 
-    
+
     .btn-order {
       background: var(--c-gold);
       border: none;
@@ -829,7 +815,7 @@
       cursor: not-allowed;
     }
 
-    
+
     .btn-order .spinner {
       display: none;
       width: 14px;
@@ -856,7 +842,7 @@
       }
     }
 
-    
+
     @media (max-width: 880px) {
       main {
         grid-template-columns: 1fr;
@@ -885,7 +871,7 @@
 
 <body>
 
-  
+
   <header>
     <div class="header-left">
       <a href="index.html" class="btn-back">← Volver al Catálogo</a>
@@ -893,38 +879,36 @@
     <a href="index.html" class="brand">OVER<span>MARK</span></a>
 
     <div class="header-right" id="authButtonsContainer" style="display: flex; gap: 1rem; align-items: center;">
-      
-      <span class="header-badge" id="defaultBadge">Personalizador de diseño</span>
+
+      <span class="header-badge" id="defaultBadge">Personalizar</span>
     </div>
   </header>
 
   <main>
 
-    
+
     <section class="preview-panel" aria-label="Vista previa de la franela">
       <span class="preview-label">Vista previa en tiempo real</span>
 
-      <div class="view-controls" style="position: absolute; top: 1.5rem; right: 2rem; z-index: 10;">
-        <button class="zone-btn" id="btnToggleRotate" onclick="toggleAutoRotate()" title="Detener rotación"
-          style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">⏸</button>
-      </div>
 
-      <div class="tshirt-wrapper">
+      <div class="tshirt-wrapper"
+        style="position: relative; width: 100%; aspect-ratio: 2/1; display: flex; justify-content: center; align-items: center; overflow: hidden; border-radius: 12px;">
+        <!-- Etiquetas superpuestas -->
+        <div
+          style="position:absolute; top:0.5rem; left:25%; transform:translateX(-50%); color:rgba(255,255,255,0.7); font-family:'Playfair Display', serif; font-size:1.5rem; font-style:italic; pointer-events:none; letter-spacing:4px; text-shadow: 0 4px 6px rgba(0,0,0,0.8); z-index: 10;">
+          FRENTE</div>
+        <div
+          style="position:absolute; top:0.5rem; left:75%; transform:translateX(-50%); color:rgba(255,255,255,0.7); font-family:'Playfair Display', serif; font-size:1.5rem; font-style:italic; pointer-events:none; letter-spacing:4px; text-shadow: 0 4px 6px rgba(0,0,0,0.8); z-index: 10;">
+          ESPALDA</div>
 
-        
-        <model-viewer id="tshirtModel" src="Low_T-shirt.obj.glb" camera-controls disable-zoom auto-rotate
-          environment-image="neutral" shadow-intensity="1">
-        </model-viewer>
-
-        
+        <canvas id="mockupCanvas" style="width: 100%; height: 100%; object-fit: contain; display: block;"></canvas>
         <div class="zone-controls" id="zoneControls">
           <button class="zone-btn" onclick="resetAdjustments()">↩ Resetear</button>
           <button class="zone-btn" onclick="removeImage()">✕ Quitar</button>
         </div>
-
       </div>
 
-      
+
       <div class="color-switcher">
         <span class="color-switcher-label">Color de franela</span>
         <div class="color-dots">
@@ -937,10 +921,10 @@
       </div>
     </section>
 
-    
+
     <aside class="controls-panel" aria-label="Opciones del pedido">
 
-      
+
       <div>
         <h1 class="product-title" id="dynProductTitle">Cargando Producto...</h1>
         <p class="product-subtitle" id="dynProductDesc">Cargando detalles...</p>
@@ -949,21 +933,16 @@
 
       <div class="section-divider"></div>
 
-      
-      <div class="side-tabs">
-        <button class="side-tab active" id="tabFront" onclick="switchSide('front')">Frente</button>
-        <button class="side-tab" id="tabBack" onclick="switchSide('back')">Espalda</button>
-      </div>
 
-      <div class="section-divider"></div>
 
-      
+
+
       <div>
         <p class="section-label">Tu diseño</p>
 
-        
+
         <div class="upload-zone" id="uploadZone" role="button" aria-label="Área para subir tu diseño" tabindex="0">
-          
+
           <input type="file" id="fileInput" accept="image/jpeg,image/png" aria-label="Seleccionar imagen" />
           <div class="upload-icon">⬆️</div>
           <p class="upload-text">
@@ -973,29 +952,81 @@
           <p class="upload-hint">JPEG / PNG · Máx. 5 MB · Mín. 300×300 px recomendado</p>
         </div>
 
-        
-        <div class="thumb-preview" id="thumbPreview">
-          <img class="thumb-img" id="thumbImg" alt="Miniatura" />
-          <div class="thumb-info">
-            <p class="thumb-name" id="thumbName"></p>
-            <p class="thumb-size" id="thumbSize"></p>
+
+        <!-- Selector de Ubicación -->
+        <div style="display:flex; gap:0.5rem; margin-top:1rem; align-items:center;">
+          <span style="color:#a0a0a0; font-size:0.85rem; width: 70px;">Agregar a:</span>
+          <div style="display:flex; flex:1; background:#111; border-radius:4px; padding:2px; border:1px solid #333;">
+            <button id="btnFront"
+              style="flex:1; margin:0; border:none; padding:0.5rem; background:#333; color:#fff; border-radius:3px; cursor:pointer; font-weight:bold; font-size:0.85rem; transition: 0.3s;"
+              onclick="setPlacement('front')">FRENTE</button>
+            <button id="btnBack"
+              style="flex:1; margin:0; border:none; padding:0.5rem; background:transparent; color:#888; border-radius:3px; cursor:pointer; font-weight:bold; font-size:0.85rem; transition: 0.3s;"
+              onclick="setPlacement('back')">ESPALDA</button>
           </div>
-          <button class="thumb-remove" onclick="removeImage()" title="Quitar imagen"
-            aria-label="Quitar imagen">✕</button>
+          <input type="hidden" id="addPlacement" value="front" />
+        </div>
+        <!-- Botones de capas -->
+        <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
+          <button class="zone-btn" onclick="addTextLayer()">+ Añadir Texto</button>
+          <button class="zone-btn" onclick="document.getElementById('fileInput').click()">+ Añadir Imagen</button>
+        </div>
+        <div id="layersList" style="margin-top: 1rem; display:flex; flex-direction:column; gap:0.5rem;"></div>
+
+        <!-- Controles de texto extra -->
+        <div id="textControls" style="display:none; flex-direction:column; gap:0.5rem; margin-top:1rem;">
+          <input type="text" id="textInput" placeholder="Escribe tu texto"
+            style="padding:0.5rem; border-radius:4px; border:1px solid #444; background:#222; color:#fff;" />
+          <div style="display:flex; gap:0.5rem;">
+            <select id="fontSelect"
+              style="flex:1; padding:0.5rem; border-radius:4px; border:1px solid #444; background:#222; color:#fff;">
+              <option value="Inter">Inter</option>
+              <option value="Playfair Display">Playfair</option>
+              <option value="Courier New">Courier</option>
+            </select>
+            <input type="color" id="textColor" value="#ffffff" style="width:50px; height:38px; cursor:pointer;" />
+          </div>
         </div>
 
-        
+        <!-- Efecto Envolver -->
+        <div class="slider-row"
+          style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; color: #a0a0a0;">
+            <span class="slider-icon">🔄</span>
+            <span class="slider-label">Efecto Envolver 360°</span>
+          </div>
+          <label class="switch" style="position: relative; display: inline-block; width: 40px; height: 20px;">
+            <input type="checkbox" id="wrapCheck" style="opacity: 0; width: 0; height: 0;" aria-label="Efecto envolver">
+            <span class="slider-toggle"
+              style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 20px;"></span>
+          </label>
+        </div>
+
+        <!-- Calibración del Cierre 360 -->
+        <div class="slider-row" id="wrapWidthControl"
+          style="display: none; align-items: center; justify-content: space-between; margin-top: 0.5rem; border-top: 1px dashed #333; padding-top: 0.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; color: #a0a0a0; font-size: 0.8rem;">
+            <span class="slider-icon">📏</span>
+            <span class="slider-label" style="font-size: 0.8rem;">Calibrar Unión</span>
+          </div>
+          <input type="range" id="wrapWidthSlider" min="500" max="850" value="650" style="width: 100px;">
+        </div>
+
+        <!-- wrapCheck listener is registered in the main script block below -->
+
+
+
         <div class="status-msg" id="statusMsg" role="alert"></div>
       </div>
 
       <div class="section-divider"></div>
 
-      
+
       <div id="adjustControls" style="display:none;">
         <p class="section-label">Ajustar diseño</p>
         <div class="slider-group">
 
-          
+
           <div class="slider-row">
             <span class="slider-icon">⊡</span>
             <span class="slider-label">Tamaño</span>
@@ -1003,25 +1034,25 @@
             <span class="slider-value" id="sizeVal">40%</span>
           </div>
 
-          
+
           <div class="slider-row">
             <span class="slider-icon">↕</span>
             <span class="slider-label">Vertical</span>
-            <input type="range" id="posYSlider" min="-45" max="45" value="0"
+            <input type="range" id="posYSlider" min="-100" max="100" value="0"
               aria-label="Posición vertical del diseño" />
             <span class="slider-value" id="posYVal">0</span>
           </div>
 
-          
+
           <div class="slider-row">
-            <span class="slider-icon">↔</span>
+            <span class="slider-icon">↔️</span>
             <span class="slider-label">Horizontal</span>
-            <input type="range" id="posXSlider" min="-45" max="45" value="0"
+            <input type="range" id="posXSlider" min="-50" max="50" value="0"
               aria-label="Posición horizontal del diseño" />
             <span class="slider-value" id="posXVal">0</span>
           </div>
 
-          
+
           <div class="slider-row">
             <span class="slider-icon">↻</span>
             <span class="slider-label">Rotación</span>
@@ -1029,7 +1060,7 @@
             <span class="slider-value" id="rotationVal">0°</span>
           </div>
 
-          
+
           <div class="slider-row"
             style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem;">
             <div style="display: flex; align-items: center; gap: 0.5rem; color: #a0a0a0;">
@@ -1069,7 +1100,7 @@
         <div class="section-divider" style="margin-top:1rem;"></div>
       </div>
 
-      
+
       <div>
         <p class="section-label">Talla</p>
         <div class="size-grid" role="group" aria-label="Seleccionar talla">
@@ -1081,24 +1112,28 @@
         </div>
       </div>
 
-      
+
       <div style="margin-bottom: 1.5rem;">
         <p class="section-label">Notas del pedido (opcional)</p>
         <textarea id="orderNotes"
           placeholder="Ej: Prefiero el diseño ligeramente hacia la izquierda, o indicaciones especiales de color..."></textarea>
       </div>
 
-      
+
       <div style="margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between;">
         <p class="section-label" style="margin-bottom: 0;">Cantidad</p>
-        <div style="display: flex; align-items: center; background: var(--c-black); border: 1px solid var(--c-dark); border-radius: 4px;">
-          <button type="button" onclick="document.getElementById('orderQty').stepDown()" style="background: none; border: none; color: var(--c-cream); padding: 0.5rem 1rem; cursor: pointer; font-size: 1.2rem;">-</button>
-          <input type="number" id="orderQty" value="1" min="1" max="99" style="background: transparent; border: none; color: var(--c-white); width: 40px; text-align: center; font-family: var(--ff-ui); font-size: 1rem; -moz-appearance: textfield; appearance: textfield;" />
-          <button type="button" onclick="document.getElementById('orderQty').stepUp()" style="background: none; border: none; color: var(--c-cream); padding: 0.5rem 1rem; cursor: pointer; font-size: 1.2rem;">+</button>
+        <div
+          style="display: flex; align-items: center; background: var(--c-black); border: 1px solid var(--c-dark); border-radius: 4px;">
+          <button type="button" onclick="document.getElementById('orderQty').stepDown()"
+            style="background: none; border: none; color: var(--c-cream); padding: 0.5rem 1rem; cursor: pointer; font-size: 1.2rem;">-</button>
+          <input type="number" id="orderQty" value="1" min="1" max="99"
+            style="background: transparent; border: none; color: var(--c-white); width: 40px; text-align: center; font-family: var(--ff-ui); font-size: 1rem; -moz-appearance: textfield; appearance: textfield;" />
+          <button type="button" onclick="document.getElementById('orderQty').stepUp()"
+            style="background: none; border: none; color: var(--c-cream); padding: 0.5rem 1rem; cursor: pointer; font-size: 1.2rem;">+</button>
         </div>
       </div>
 
-      
+
       <button class="btn-order" id="btnOrder" disabled onclick="processOrder()">
         <span class="spinner"></span>
         <span class="btn-text">Añadir al Carrito</span>
@@ -1107,7 +1142,7 @@
     </aside>
   </main>
 
-  
+
   <div class="modal-overlay" id="authModal">
     <div class="modal-content">
       <button class="modal-close" onclick="closeModal()">×</button>
@@ -1115,7 +1150,7 @@
       <h2 class="modal-title" id="modalTitle">Iniciar Sesión</h2>
       <p class="modal-subtitle" id="modalSubtitle">Debes iniciar sesión para procesar tu pedido</p>
 
-      
+
       <button class="btn-social btn-google" onclick="loginWithGoogle(); return false;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
           <path fill="#EA4335"
@@ -1164,93 +1199,187 @@
     </div>
   </div>
 
-  
-  <script>
-    'use strict';
 
+  <script>
     
-    const uploadZone = document.getElementById('uploadZone');
+    
+    let supabaseClient = null;
+    try {
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      window.supabaseClient = supabaseClient;
+    } catch (e) {
+      console.warn("Supabase no configurado:", e.message);
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('product');
+
+    const mockupImages = {
+      front: new Image(),
+      back: new Image()
+    };
+
+    mockupImages.front.onload = function () { applyAdjustments(); };
+    mockupImages.back.onload = function () { applyAdjustments(); };
+
+    // Dummy toggleAutoRotate (no longer needed with 2D canvas but referenced in HTML)
+    function toggleAutoRotate() { /* no-op in 2D mode */ }
+
+    function changeShirtColor(el) {
+      document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+      el.classList.add('active');
+      const colors = {
+        'white': null,
+        'black': '#111111',
+        'navy': '#1c2841',
+        'beige': '#c8b89a',
+        'olive': '#4b5320'
+      };
+      currentShirtHex = colors[el.dataset.color] || null;
+      applyAdjustments();
+    }
+
     const fileInput = document.getElementById('fileInput');
-    const tshirtModel = document.getElementById('tshirtModel');
-    const thumbPreview = document.getElementById('thumbPreview');
-    const thumbImg = document.getElementById('thumbImg');
-    const thumbName = document.getElementById('thumbName');
-    const thumbSize = document.getElementById('thumbSize');
     const statusMsg = document.getElementById('statusMsg');
     const adjustControls = document.getElementById('adjustControls');
     const zoneControls = document.getElementById('zoneControls');
     const btnOrder = document.getElementById('btnOrder');
-    const notesInput = document.getElementById('orderNotes');
 
-    
     const sizeSlider = document.getElementById('sizeSlider');
     const posYSlider = document.getElementById('posYSlider');
     const posXSlider = document.getElementById('posXSlider');
     const rotationSlider = document.getElementById('rotationSlider');
     const mirrorCheck = document.getElementById('mirrorCheck');
+    const wrapCheck = document.getElementById('wrapCheck');
+    const wrapWidthSlider = document.getElementById('wrapWidthSlider');
+    const wrapWidthControl = document.getElementById('wrapWidthControl');
 
-    
-    let currentSide = 'front';
     let selectedSize = 'L';
     let isLoggedIn = false;
+    let currentShirtHex = null;
+    let currentPrice = 0;
 
-    const sideState = {
-      front: { file: null, imgObj: null, size: 40, posX: 0, posY: 0, rotation: 0, mirror: false },
-      back: { file: null, imgObj: null, size: 40, posX: 0, posY: 0, rotation: 0, mirror: false }
+    const state = {
+      layers: [],
+      activeLayerId: null
     };
 
-    
-    
-    
-    // Aquí pongo mi URL de Supabase para conectarme a la base de datos
-    const SUPABASE_URL = 'https://kynysaefypgugdvcfpzj.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5bnlzYWVmeXBndWdkdmNmcHpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5MTEwODgsImV4cCI6MjEwNDQ4NzA4OH0.GsC_nggMng_-5-3K2T1rApgctiyWcVXAeS7uw5H2ftU';
+    // supabaseClient already initialized above
 
-    let supabaseClient = null;
-    try {
-      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    } catch (e) {
-      console.warn("Supabase no configurado:", e.message);
+    function renderLayersList() {
+      const list = document.getElementById('layersList');
+      list.innerHTML = '';
+
+      state.layers.forEach((layer, index) => {
+        const item = document.createElement('div');
+        item.className = 'layer-item';
+        if (layer.id === state.activeLayerId) item.style.borderColor = 'var(--c-gold)';
+
+        const name = layer.type === 'image' ? (layer.file?.name || 'Imagen') : 'Texto: ' + layer.text;
+
+        item.innerHTML = `
+          <div style="display:flex; align-items:center; gap:0.5rem;" onclick="selectLayer('${layer.id}')">
+            <span>${layer.type === 'image' ? '📷' : 'T'}</span>
+            <span style="font-size:0.85rem;">${name.substring(0, 20)}</span>
+          </div>
+          <button onclick="removeLayer('${layer.id}')" style="background:none; border:none; color:#C0392B; cursor:pointer;" title="Eliminar">✕</button>
+        `;
+        list.appendChild(item);
+      });
     }
 
-    function switchSide(side) {
-      currentSide = side;
-      document.getElementById('tabFront').classList.toggle('active', side === 'front');
-      document.getElementById('tabBack').classList.toggle('active', side === 'back');
-      updateUIForSide();
+    function selectLayer(id) {
+      state.activeLayerId = id;
+      renderLayersList();
+      updateUIForActiveLayer();
     }
 
-    function updateUIForSide() {
-      const state = sideState[currentSide];
-
-      if (state.file) {
-        thumbImg.src = state.imgObj.src;
-        thumbName.textContent = truncateFilename(state.file.name, 25);
-        thumbSize.textContent = formatFileSize(state.file.size);
-        thumbPreview.classList.add('visible');
-        uploadZone.style.display = 'none';
-
-        adjustControls.style.display = 'block';
-        zoneControls.classList.add('visible');
-
-        sizeSlider.value = state.size;
-        posXSlider.value = state.posX;
-        posYSlider.value = state.posY;
-        rotationSlider.value = state.rotation;
-        mirrorCheck.checked = state.mirror;
-
-        updateSliderLabels();
-      } else {
-        thumbPreview.classList.remove('visible');
-        uploadZone.style.display = 'block';
-        adjustControls.style.display = 'none';
-        zoneControls.classList.remove('visible');
+    function removeLayer(id) {
+      state.layers = state.layers.filter(l => l.id !== id);
+      if (state.activeLayerId === id) {
+        state.activeLayerId = state.layers.length > 0 ? state.layers[0].id : null;
       }
+      renderLayersList();
+      updateUIForActiveLayer();
+      applyAdjustments();
       checkOrderButton();
     }
 
+    function setPlacement(side) {
+      document.getElementById('addPlacement').value = side;
+      if (side === 'front') {
+        document.getElementById('btnFront').style.background = '#333';
+        document.getElementById('btnFront').style.color = '#fff';
+        document.getElementById('btnBack').style.background = 'transparent';
+        document.getElementById('btnBack').style.color = '#888';
+      } else {
+        document.getElementById('btnBack').style.background = '#333';
+        document.getElementById('btnBack').style.color = '#fff';
+        document.getElementById('btnFront').style.background = 'transparent';
+        document.getElementById('btnFront').style.color = '#888';
+      }
+    }
+
+    function addTextLayer() {
+      const newLayer = {
+        id: 'text_' + Date.now(),
+        type: 'text',
+        text: 'OVERMARK',
+        font: 'Inter',
+        color: '#ffffff',
+        size: 40,
+        posX: 0,
+        posY: 0,
+        rotation: 0,
+        mirror: false,
+        wrap: false
+      };
+      state.layers.push(newLayer);
+      state.activeLayerId = newLayer.id;
+      renderLayersList();
+      updateUIForActiveLayer();
+      applyAdjustments();
+      checkOrderButton();
+    }
+
+    function updateUIForActiveLayer() {
+      const layer = state.layers.find(l => l.id === state.activeLayerId);
+
+      if (layer) {
+        adjustControls.style.display = 'block';
+        zoneControls.classList.add('visible');
+
+        sizeSlider.value = layer.size;
+        posXSlider.value = layer.posX;
+        posYSlider.value = layer.posY;
+        rotationSlider.value = layer.rotation;
+        if (mirrorCheck) mirrorCheck.checked = layer.mirror || false;
+        if (wrapCheck) {
+          wrapCheck.checked = layer.wrap || false;
+          wrapWidthControl.style.display = layer.wrap ? 'flex' : 'none';
+        }
+        if (wrapWidthSlider) wrapWidthSlider.value = layer.wrapWidth || 650;
+
+        const textControls = document.getElementById('textControls');
+        if (textControls) {
+          if (layer.type === 'text') {
+            textControls.style.display = 'flex';
+            document.getElementById('textInput').value = layer.text;
+            if (document.getElementById('fontSelect')) document.getElementById('fontSelect').value = layer.font;
+            if (document.getElementById('textColor')) document.getElementById('textColor').value = layer.color;
+          } else {
+            textControls.style.display = 'none';
+          }
+        }
+        updateSliderLabels();
+      } else {
+        adjustControls.style.display = 'none';
+        zoneControls.classList.remove('visible');
+      }
+    }
+
     function checkOrderButton() {
-      if (sideState.front.file || sideState.back.file) {
+      if (state.layers.length > 0) {
         btnOrder.disabled = false;
         btnOrder.querySelector('.btn-text').textContent = 'Añadir al Carrito';
       } else {
@@ -1259,208 +1388,456 @@
       }
     }
 
-    const MAX_FILE_SIZE_MB = 5;
-    const MAX_FILE_SIZE_B = MAX_FILE_SIZE_MB * 1024 * 1024;
-    const ALLOWED_TYPES = ['image/jpeg', 'image/png'];
-
-    uploadZone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      uploadZone.classList.add('drag-over');
-    });
-
-    uploadZone.addEventListener('dragleave', () => {
-      uploadZone.classList.remove('drag-over');
-    });
-
-    uploadZone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      uploadZone.classList.remove('drag-over');
-      const file = e.dataTransfer.files[0];
-      if (file) handleFile(file);
-    });
-
     fileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) handleFile(file);
+      fileInput.value = '';
     });
-
-    uploadZone.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        fileInput.click();
-      }
-    });
-
-    function validateFile(file) {
-      if (!ALLOWED_TYPES.includes(file.type)) return 'Solo se aceptan imágenes JPEG o PNG.';
-      if (file.size > MAX_FILE_SIZE_B) return `El archivo supera el límite de ${MAX_FILE_SIZE_MB} MB.`;
-      return null;
-    }
 
     function handleFile(file) {
       clearStatus();
-      const error = validateFile(file);
-      if (error) {
-        showStatus(error, 'error');
-        return;
-      }
-
-      const state = sideState[currentSide];
-      state.file = file;
-
       const objectURL = URL.createObjectURL(file);
-      state.imgObj = new Image();
-      state.imgObj.onload = () => {
-        state.size = 40;
-        state.posX = 0;
-        state.posY = 0;
-        state.rotation = 0;
-        state.mirror = false;
-        updateUIForSide();
+      const imgObj = new Image();
+
+      imgObj.onload = () => {
+        const placement = document.getElementById('addPlacement') ? document.getElementById('addPlacement').value : 'front';
+        const newLayer = {
+          id: 'img_' + Date.now(),
+          type: 'image',
+          file: file,
+          imgObj: imgObj,
+          size: 40,
+          posX: 0,
+          posY: 0,
+          rotation: 0,
+          mirror: false,
+          wrap: false,
+          placement: placement
+        };
+        state.layers.push(newLayer);
+        state.activeLayerId = newLayer.id;
+
+        renderLayersList();
+        updateUIForActiveLayer();
         applyAdjustments();
+        checkOrderButton();
       };
-      state.imgObj.src = objectURL;
+      imgObj.src = objectURL;
     }
 
-    function updateSliderLabels() {
-      document.getElementById('sizeVal').textContent = `${sizeSlider.value}%`;
-      document.getElementById('posYVal').textContent = posYSlider.value;
-      document.getElementById('posXVal').textContent = posXSlider.value;
-      document.getElementById('rotationVal').textContent = `${rotationSlider.value}°`;
-    }
+    function syncLayerFromControls() {
+      const layer = state.layers.find(l => l.id === state.activeLayerId);
+      if (!layer) return;
 
-    async function applyAdjustments() {
-      if (!tshirtModel.model) return;
+      layer.size = sizeSlider.value;
+      layer.posX = posXSlider.value;
+      layer.posY = posYSlider.value;
+      layer.rotation = rotationSlider.value;
 
-      const state = sideState[currentSide];
-      if (state.file) {
-        state.size = sizeSlider.value;
-        state.posX = posXSlider.value;
-        state.posY = posYSlider.value;
-        state.rotation = rotationSlider.value;
-        state.mirror = mirrorCheck.checked;
+      if (layer.type === 'text') {
+        layer.text = document.getElementById('textInput').value;
+        if (document.getElementById('fontSelect')) layer.font = document.getElementById('fontSelect').value;
+        if (document.getElementById('textColor')) layer.color = document.getElementById('textColor').value;
       }
+
       updateSliderLabels();
-
-      const canvas = document.createElement('canvas');
-      canvas.width = 1024;
-      canvas.height = 1024;
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = currentShirtHex;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      if (sideState.front.imgObj) {
-        const f = sideState.front;
-        const baseScale = 400 / Math.max(f.imgObj.width, f.imgObj.height);
-        const scale = f.size / 100;
-        const w = f.imgObj.width * baseScale * scale;
-        const h = f.imgObj.height * baseScale * scale;
-        
-        const centerX = canvas.width * 0.72 + parseInt(f.posX) * 5;
-        const centerY = canvas.height * 0.45 - parseInt(f.posY) * 5; 
-        ctx.globalAlpha = 1;
-        ctx.save();
-        ctx.translate(centerX, centerY);
-        let scaleX = 1;
-        if (f.mirror) scaleX *= -1;
-        ctx.scale(scaleX, -1);
-        ctx.rotate(f.rotation * Math.PI / 180);
-        ctx.drawImage(f.imgObj, -w / 2, -h / 2, w, h);
-        ctx.restore();
-      }
-
-      if (sideState.back.imgObj) {
-        const b = sideState.back;
-        const baseScale = 400 / Math.max(b.imgObj.width, b.imgObj.height);
-        const scale = b.size / 100;
-        const w = b.imgObj.width * baseScale * scale;
-        const h = b.imgObj.height * baseScale * scale;
-        
-        const centerX = canvas.width * 0.28 + parseInt(b.posX) * 5;
-        const centerY = canvas.height * 0.45 - parseInt(b.posY) * 5;
-        ctx.globalAlpha = 1;
-        ctx.save();
-        ctx.translate(centerX, centerY);
-        let scaleX = 1;
-        if (b.mirror) scaleX *= -1;
-        ctx.scale(scaleX, -1);
-        ctx.rotate(b.rotation * Math.PI / 180);
-        ctx.drawImage(b.imgObj, -w / 2, -h / 2, w, h);
-        ctx.restore();
-      }
-
-      const texture = await tshirtModel.createTexture(canvas.toDataURL());
-      for (const material of tshirtModel.model.materials) {
-        if (material.pbrMetallicRoughness) material.pbrMetallicRoughness.baseColorTexture.setTexture(texture);
-      }
+      applyAdjustments();
     }
 
-    [sizeSlider, posYSlider, posXSlider, rotationSlider, mirrorCheck].forEach(el => {
-      el.addEventListener('input', applyAdjustments);
+    function updateLayerProp(prop, value) {
+      const layer = state.layers.find(l => l.id === state.activeLayerId);
+      if (!layer) return;
+      layer[prop] = value;
+      applyAdjustments();
+    }
+
+    [sizeSlider, posYSlider, posXSlider, rotationSlider].forEach(el => {
+      if (el) el.addEventListener('input', syncLayerFromControls);
     });
 
-    function resetAdjustments() {
-      sizeSlider.value = 40;
-      posYSlider.value = 0;
-      posXSlider.value = 0;
-      rotationSlider.value = 0;
-      mirrorCheck.checked = false;
-      applyAdjustments();
+    if (document.getElementById('textInput')) document.getElementById('textInput').addEventListener('input', syncLayerFromControls);
+    if (document.getElementById('fontSelect')) document.getElementById('fontSelect').addEventListener('change', syncLayerFromControls);
+    if (document.getElementById('textColor')) document.getElementById('textColor').addEventListener('input', syncLayerFromControls);
+
+    function updateSliderLabels() {
+      if (document.getElementById('sizeVal')) document.getElementById('sizeVal').textContent = sizeSlider.value + '%';
+      if (document.getElementById('posYVal')) document.getElementById('posYVal').textContent = posYSlider.value;
+      if (document.getElementById('posXVal')) document.getElementById('posXVal').textContent = posXSlider.value;
+      if (document.getElementById('rotationVal')) document.getElementById('rotationVal').textContent = rotationSlider.value + '°';
     }
 
-    function removeImage() {
-      const state = sideState[currentSide];
-      state.file = null;
-      state.imgObj = null;
-      fileInput.value = '';
-      updateUIForSide();
-      applyAdjustments();
-      clearStatus();
-    }
-
-    const SHIRT_COLORS = {
-      white: '#F5F5F0', black: '#1A1A1A', navy: '#1B2A4A', beige: '#D4C5A9', olive: '#4A4A2E',
-    };
-    let currentShirtHex = '#1A1A1A';
-
-    function changeShirtColor(dot) {
-      if (!dot) return;
+    function changeShirtColor(el) {
       document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
-      dot.classList.add('active');
-      const color = dot.dataset.color;
-      currentShirtHex = SHIRT_COLORS[color] || '#1A1A1A';
+      el.classList.add('active');
+      const colors = {
+        'white': '#ffffff',
+        'black': '#1a1a1a',
+        'navy': '#1c2841',
+        'beige': '#e3dac9',
+        'olive': '#4b5320'
+      };
+      currentShirtHex = colors[el.dataset.color];
       applyAdjustments();
-      if (tshirtModel.model) {
-        for (const material of tshirtModel.model.materials) {
-          if (typeof material.setDoubleSided === 'function') material.setDoubleSided(true);
-          if (material.pbrMetallicRoughness) {
-            material.pbrMetallicRoughness.setBaseColorFactor([1, 1, 1, 1]);
-            material.pbrMetallicRoughness.setMetallicFactor(0);
-            material.pbrMetallicRoughness.setRoughnessFactor(0.9);
+    }
+
+    function applyAdjustments() {
+      const canvas = document.getElementById('mockupCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      canvas.width = 2048;
+      canvas.height = 1024;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw t-shirt images
+      if (mockupImages.front && mockupImages.front.complete && mockupImages.front.naturalWidth !== 0) {
+        ctx.drawImage(mockupImages.front, 0, 0, 1024, 1024);
+      }
+      if (mockupImages.back && mockupImages.back.complete && mockupImages.back.naturalWidth !== 0) {
+        ctx.drawImage(mockupImages.back, 1024, 0, 1024, 1024);
+      }
+
+      // Apply color tint correctly preserving transparent backgrounds
+      if (currentShirtHex) {
+        const offCanvas = document.createElement('canvas');
+        offCanvas.width = canvas.width;
+        offCanvas.height = canvas.height;
+        const oCtx = offCanvas.getContext('2d');
+
+        oCtx.fillStyle = currentShirtHex;
+        oCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+        oCtx.globalCompositeOperation = 'multiply';
+        if (mockupImages.front && mockupImages.front.complete && mockupImages.front.naturalWidth !== 0) {
+          oCtx.drawImage(mockupImages.front, 0, 0, 1024, 1024);
+        }
+        if (mockupImages.back && mockupImages.back.complete && mockupImages.back.naturalWidth !== 0) {
+          oCtx.drawImage(mockupImages.back, 1024, 0, 1024, 1024);
+        }
+
+        ctx.globalCompositeOperation = 'source-in';
+        ctx.drawImage(offCanvas, 0, 0);
+        ctx.globalCompositeOperation = 'source-over';
+      }
+
+      // Draw design layers
+      function buildSafeZonePath(ctx, placement, scale = 1) {
+        const isBack = placement === 'back';
+        const cx = (isBack ? 1536 : 512) * scale;
+        ctx.beginPath();
+        if (!isBack) {
+          ctx.moveTo(cx - 220 * scale, 150 * scale);
+          ctx.quadraticCurveTo(cx, 280 * scale, cx + 220 * scale, 150 * scale);
+          ctx.lineTo(cx + 258 * scale, 950 * scale);
+          ctx.lineTo(cx - 258 * scale, 950 * scale);
+        } else {
+          ctx.moveTo(cx - 220 * scale, 130 * scale);
+          ctx.quadraticCurveTo(cx, 160 * scale, cx + 220 * scale, 130 * scale);
+          ctx.lineTo(cx + 258 * scale, 950 * scale);
+          ctx.lineTo(cx - 258 * scale, 950 * scale);
+        }
+        ctx.closePath();
+      }
+
+      function drawLayer(layer) {
+        if (!layer) return;
+        if (layer.type === 'image' && !layer.imgObj) return;
+        if (layer.type === 'text' && !layer.text) return;
+
+        const isBack = layer.placement === 'back';
+        const centerX = isBack ? 1536 : 512;
+        const localX = centerX + parseFloat(layer.posX) * 10;
+        const localY = 512 - parseFloat(layer.posY) * 5;
+        const drawInstance = (x, clipStartX) => {
+          ctx.save();
+          if (clipStartX !== null) {
+            ctx.beginPath();
+            ctx.rect(clipStartX, 0, 1024, 1024);
+            ctx.clip();
           }
+          if (!layer.wrap) {
+            buildSafeZonePath(ctx, layer.placement, 1);
+            ctx.clip();
+          }
+          ctx.translate(x, localY);
+          ctx.rotate(layer.rotation * Math.PI / 180);
+          if (layer.mirror) ctx.scale(-1, 1);
+
+          if (layer.type === 'image' && layer.imgObj) {
+            const baseScale = 512 / Math.max(layer.imgObj.width, layer.imgObj.height);
+            const scale = layer.size / 100;
+            const w = layer.imgObj.width * baseScale * scale;
+            const h = layer.imgObj.height * baseScale * scale;
+            ctx.drawImage(layer.imgObj, -w / 2, -h / 2, w, h);
+          } else if (layer.type === 'text') {
+            const scale = layer.size / 100;
+            const fontSize = 100 * scale;
+            ctx.font = `bold ${fontSize}px ${layer.font}`;
+            ctx.fillStyle = layer.color || '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(layer.text, 0, 0);
+          }
+          ctx.restore();
+        };
+
+        ctx.globalAlpha = 1;
+        if (layer.wrap) {
+          const S = layer.wrapWidth || 650; // Ancho visual calibrado de la camisa
+          const gap = 1024 - S;
+          const outer = 1024 + S;
+
+          // Dibujar el original siempre
+          drawInstance(localX, null);
+
+          // Si el original está en el frente, las copias van a la espalda (clip en X=1024)
+          if (localX < 1024) {
+            drawInstance(localX + gap, 1024);
+            drawInstance(localX + outer, 1024);
+          }
+          // Si el original está en la espalda, las copias van al frente (clip en X=0)
+          else {
+            drawInstance(localX - gap, 0);
+            drawInstance(localX - outer, 0);
+          }
+        } else {
+          drawInstance(localX, null);
+        }
+      }
+
+      ctx.globalCompositeOperation = 'source-atop';
+      state.layers.forEach(layer => drawLayer(layer));
+
+      // Dibujar línea separadora en el centro para indicar las zonas lógicas
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(1024, 0);
+      ctx.lineTo(1024, 1024);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([10, 10]);
+      ctx.stroke();
+      ctx.restore();
+
+      // Dibujar zona segura (rojo semitransparente)
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255, 50, 50, 0.4)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([5, 5]);
+      buildSafeZonePath(ctx, 'front', 1); ctx.stroke();
+      buildSafeZonePath(ctx, 'back', 1); ctx.stroke();
+      ctx.restore();
+
+      ctx.globalCompositeOperation = 'source-over';
+
+      // 🖼️ Selection box + dimensions (like the video) 🖼️──
+      const activeLayer = state.layers.find(l => l.id === state.activeLayerId);
+      if (activeLayer) {
+        const bounds = getLayerBounds(activeLayer);
+        if (bounds) {
+          const { cx, cy, w, h } = bounds;
+          const pad = 12;
+          const bx = cx - w / 2 - pad;
+          const by = cy - h / 2 - pad;
+          const bw = w + pad * 2;
+          const bh = h + pad * 2;
+
+          ctx.save();
+
+          // Dashed blue border
+          ctx.strokeStyle = '#1a8cff';
+          ctx.lineWidth = 3;
+          ctx.setLineDash([12, 6]);
+          ctx.strokeRect(bx, by, bw, bh);
+          ctx.setLineDash([]);
+
+          // Corner handles (white squares with blue border)
+          const hs = 14;
+          [[bx, by], [bx + bw, by], [bx, by + bh], [bx + bw, by + bh]].forEach(([hx, hy]) => {
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(hx - hs / 2, hy - hs / 2, hs, hs);
+            ctx.strokeStyle = '#1a8cff';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(hx - hs / 2, hy - hs / 2, hs, hs);
+          });
+
+          // Dimensions label
+          const wCm = (w * CM_PER_PIXEL).toFixed(1);
+          const hCm = (h * CM_PER_PIXEL).toFixed(1);
+          const label = `${wCm} CM x ${hCm} CM`;
+          const fSize = 24;
+          ctx.font = `bold ${fSize}px Inter, Arial, sans-serif`;
+          const lw = ctx.measureText(label).width + 28;
+          const lh = fSize + 16;
+          const lx = cx - lw / 2;
+          const ly = by + bh + 10;
+
+          ctx.fillStyle = '#1a8cff';
+          // Rounded rect polyfill
+          const r = 6;
+          ctx.beginPath();
+          ctx.moveTo(lx + r, ly);
+          ctx.lineTo(lx + lw - r, ly);
+          ctx.quadraticCurveTo(lx + lw, ly, lx + lw, ly + r);
+          ctx.lineTo(lx + lw, ly + lh - r);
+          ctx.quadraticCurveTo(lx + lw, ly + lh, lx + lw - r, ly + lh);
+          ctx.lineTo(lx + r, ly + lh);
+          ctx.quadraticCurveTo(lx, ly + lh, lx, ly + lh - r);
+          ctx.lineTo(lx, ly + r);
+          ctx.quadraticCurveTo(lx, ly, lx + r, ly);
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.fillStyle = '#ffffff';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(label, cx, ly + lh / 2);
+
+          ctx.restore();
         }
       }
     }
 
-    tshirtModel.addEventListener('load', () => {
-      const activeDot = document.querySelector('.color-dot.active');
-      changeShirtColor(activeDot);
+    // ── Canvas interaction: drag, hover cursor, touch ──
+    const CM_PER_PIXEL = 0.05; // ~1 canvas pixel ≈ 0.05 cm
+    let dragState = null;
+
+    function getLayerBounds(layer) {
+      const isBack = layer.placement === 'back';
+      const cx = (isBack ? 1536 : 512) + parseFloat(layer.posX) * 10;
+      const cy = 512 - parseFloat(layer.posY) * 5;
+      let w, h;
+      if (layer.type === 'image' && layer.imgObj) {
+        const baseScale = 512 / Math.max(layer.imgObj.width, layer.imgObj.height);
+        const scale = layer.size / 100;
+        w = layer.imgObj.width * baseScale * scale;
+        h = layer.imgObj.height * baseScale * scale;
+      } else if (layer.type === 'text' && layer.text) {
+        const fontSize = 100 * (layer.size / 100);
+        w = layer.text.length * fontSize * 0.55;
+        h = fontSize * 1.3;
+      } else {
+        return null;
+      }
+      return { cx, cy, w, h };
+    }
+
+    function getCanvasCoords(e) {
+      const canvas = document.getElementById('mockupCanvas');
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      return {
+        x: (e.clientX - rect.left) * scaleX,
+        y: (e.clientY - rect.top) * scaleY
+      };
+    }
+
+    function hitTestLayers(cx, cy) {
+      return [...state.layers].reverse().find(layer => {
+        const b = getLayerBounds(layer);
+        if (!b) return false;
+        return Math.abs(cx - b.cx) <= b.w / 2 + 12 && Math.abs(cy - b.cy) <= b.h / 2 + 12;
+      });
+    }
+
+    (function setupCanvasInteraction() {
+      const canvas = document.getElementById('mockupCanvas');
+      canvas.style.cursor = 'default';
+
+      canvas.addEventListener('mousedown', function (e) {
+        const { x, y } = getCanvasCoords(e);
+        const hit = hitTestLayers(x, y);
+        if (hit) {
+          state.activeLayerId = hit.id;
+          renderLayersList();
+          updateUIForActiveLayer();
+          dragState = {
+            layerId: hit.id,
+            startX: x, startY: y,
+            origPosX: parseFloat(hit.posX),
+            origPosY: parseFloat(hit.posY)
+          };
+          canvas.style.cursor = 'grabbing';
+          e.preventDefault();
+        }
+      });
+
+      canvas.addEventListener('mousemove', function (e) {
+        const { x, y } = getCanvasCoords(e);
+        if (dragState) {
+          const layer = state.layers.find(l => l.id === dragState.layerId);
+          if (layer) {
+            let newPosX = dragState.origPosX + (x - dragState.startX) / 10;
+            layer.posX = Math.max(-50, Math.min(50, newPosX));
+            layer.posY = dragState.origPosY - (y - dragState.startY) / 5;
+            if (posXSlider) posXSlider.value = layer.posX;
+            if (posYSlider) posYSlider.value = layer.posY;
+            updateSliderLabels();
+            applyAdjustments();
+          }
+        } else {
+          const hit = hitTestLayers(x, y);
+          canvas.style.cursor = hit ? 'grab' : 'default';
+        }
+      });
+
+      function endDrag() { dragState = null; canvas.style.cursor = 'default'; }
+      canvas.addEventListener('mouseup', endDrag);
+      canvas.addEventListener('mouseleave', endDrag);
+
+      // Touch support
+      canvas.addEventListener('touchstart', function (e) {
+        const t = e.touches[0];
+        canvas.dispatchEvent(new MouseEvent('mousedown', { clientX: t.clientX, clientY: t.clientY }));
+        e.preventDefault();
+      }, { passive: false });
+      canvas.addEventListener('touchmove', function (e) {
+        const t = e.touches[0];
+        canvas.dispatchEvent(new MouseEvent('mousemove', { clientX: t.clientX, clientY: t.clientY }));
+        e.preventDefault();
+      }, { passive: false });
+      canvas.addEventListener('touchend', endDrag);
+    })();
+
+    // Register wrap checkbox listener here (after state is defined)
+    document.getElementById('wrapCheck').addEventListener('change', function () {
+      const layer = state.layers.find(l => l.id === state.activeLayerId);
+      if (layer) {
+        layer.wrap = this.checked;
+        wrapWidthControl.style.display = layer.wrap ? 'flex' : 'none';
+        applyAdjustments();
+      }
     });
 
-    let isAutoRotate = true;
-    function toggleAutoRotate() {
-      const btn = document.getElementById('btnToggleRotate');
-      isAutoRotate = !isAutoRotate;
-      if (isAutoRotate) {
-        tshirtModel.setAttribute('auto-rotate', '');
-        btn.textContent = '⏸';
-        btn.title = 'Detener rotación';
-      } else {
-        tshirtModel.removeAttribute('auto-rotate');
-        btn.textContent = '▶';
-        btn.title = 'Activar rotación';
+    document.getElementById('wrapWidthSlider').addEventListener('input', function () {
+      const layer = state.layers.find(l => l.id === state.activeLayerId);
+      if (layer) {
+        layer.wrapWidth = parseFloat(this.value);
+        applyAdjustments();
       }
+    });
+
+    // Kick off initial render
+    window.addEventListener('DOMContentLoaded', applyAdjustments);
+    setTimeout(applyAdjustments, 200);
+
+    function resetAdjustments() {
+      const layer = state.layers.find(l => l.id === state.activeLayerId);
+      if (!layer) return;
+      layer.size = 40;
+      layer.posX = 0;
+      layer.posY = 0;
+      layer.rotation = 0;
+      layer.mirror = false;
+      layer.wrap = false;
+      updateUIForActiveLayer();
+      applyAdjustments();
+    }
+
+    function removeImage() {
+      removeLayer(state.activeLayerId);
     }
 
     function selectSize(btn) {
@@ -1469,127 +1846,153 @@
       selectedSize = btn.dataset.size;
     }
 
-    
-    
-    
-    async function processOrder() {
-      if (!sideState.front.file && !sideState.back.file) {
-        showStatus('Por favor sube al menos una imagen antes de pedir.', 'error');
+    async function loadDynamicProduct() {
+      if (!productId || !supabaseClient) return;
+      const { data: product, error } = await supabaseClient.from('products').select('*').eq('id', productId).single();
+      if (error || !product) {
+        document.getElementById('dynProductTitle').textContent = "Producto no encontrado";
         return;
       }
-      if (!isLoggedIn) {
-        openModal('login');
-        return;
+      document.getElementById('dynProductTitle').textContent = product.name;
+      document.getElementById('dynProductDesc').textContent = product.description || '';
+      document.getElementById('dynProductPrice').textContent = `Desde $${product.price} USD`;
+      currentPrice = product.price;
+
+      if (product.custom_front_url) {
+        mockupImages.front.src = product.custom_front_url;
+      } else {
+        mockupImages.front.src = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png'; // Fallback just in case
       }
-      if (!supabaseClient) {
-        showStatus('Supabase no está configurado. No se puede guardar el pedido.', 'error');
-        return;
-      }
-
-      btnOrder.disabled = true;
-      btnOrder.classList.add('loading');
-      btnOrder.querySelector('.btn-text').textContent = 'Subiendo diseño...';
-      clearStatus();
-
-      try {
-        const { data: { user } } = await supabaseClient.auth.getUser();
-        if (!user) throw new Error("Debes iniciar sesión.");
-
-        const orderData = {
-          customer_name: user.user_metadata?.full_name || 'Desconocido',
-          customer_email: user.email,
-          product_id: currentProductId, 
-          name: document.getElementById('dynProductTitle').textContent,
-          price: parseFloat(document.getElementById('dynProductPrice').textContent.replace(/[^0-9.-]+/g,"")) || 28.00,
-          quantity: parseInt(document.getElementById('orderQty').value) || 1,
-          size: selectedSize,
-          notes: notesInput.value.trim(),
-          config: {
-            img_size_front: parseInt(sideState.front.size) || 40,
-            img_pos_x_front: parseInt(sideState.front.posX) || 0,
-            img_pos_y_front: parseInt(sideState.front.posY) || 0,
-            img_rotation_front: parseInt(sideState.front.rotation) || 0,
-            img_mirror_front: sideState.front.mirror || false,
-            img_size_back: parseInt(sideState.back.size) || 40,
-            img_pos_x_back: parseInt(sideState.back.posX) || 0,
-            img_pos_y_back: parseInt(sideState.back.posY) || 0,
-            img_rotation_back: parseInt(sideState.back.rotation) || 0,
-            img_mirror_back: sideState.back.mirror || false
-          }
-        };
-
-        async function uploadImage(file, side, bucket = 'orders_images') {
-          if (!file) return null;
-          let ext = 'png';
-          if (file.name) {
-            ext = file.name.split('.').pop();
-          }
-          const fileName = `cart_${Date.now()}_${side}.${ext}`;
-          const { data, error } = await supabaseClient.storage.from(bucket).upload(fileName, file);
-          if (error) throw error;
-          const { data: publicUrlData } = supabaseClient.storage.from(bucket).getPublicUrl(fileName);
-          return publicUrlData.publicUrl;
-        }
-
-        function createPrintReadyBlob(state) {
-          return new Promise((resolve) => {
-            if (!state.imgObj) { resolve(null); return; }
-            const canvas = document.createElement('canvas');
-            canvas.width = 2400; 
-            canvas.height = 2400;
-            const ctx = canvas.getContext('2d');
-            
-            const baseScale = 1200 / Math.max(state.imgObj.width, state.imgObj.height);
-            const scale = state.size / 100;
-            const w = state.imgObj.width * baseScale * scale;
-            const h = state.imgObj.height * baseScale * scale;
-            
-            const centerX = canvas.width / 2 + parseInt(state.posX) * 12;
-            const centerY = canvas.height / 2 - parseInt(state.posY) * 12;
-            
-            ctx.translate(centerX, centerY);
-            if (state.mirror) ctx.scale(-1, 1);
-            ctx.rotate(state.rotation * Math.PI / 180);
-            ctx.drawImage(state.imgObj, -w / 2, -h / 2, w, h);
-            
-            canvas.toBlob((blob) => resolve(blob), 'image/png');
-          });
-        }
-
-        btnOrder.querySelector('.btn-text').textContent = 'Subiendo diseño Print-Ready...';
-        const frontBlob = await createPrintReadyBlob(sideState.front);
-        if (frontBlob) orderData.print_ready_front = await uploadImage(frontBlob, 'pr_front', 'user_designs');
-        
-        const backBlob = await createPrintReadyBlob(sideState.back);
-        if (backBlob) orderData.print_ready_back = await uploadImage(backBlob, 'pr_back', 'user_designs');
-
-        btnOrder.querySelector('.btn-text').textContent = 'Subiendo vistas previas...';
-        orderData.image_front = await uploadImage(sideState.front.file, 'front');
-        orderData.image_back = await uploadImage(sideState.back.file, 'back');
-
-        btnOrder.querySelector('.btn-text').textContent = 'Capturando modelo 3D...';
-        const viewer = document.getElementById('tshirtModel');
-        const mockupBlob = await viewer.toBlob({idealAspect: true});
-        orderData.mockup_url = await uploadImage(mockupBlob, 'mockup');
-
-        btnOrder.querySelector('.btn-text').textContent = 'Guardando en el carrito...';
-        
-        
-        addCustomToCart(orderData);
-
-      } catch (err) {
-        console.error('Error al procesar:', err);
-        showStatus(err.message || 'Error al añadir al carrito.', 'error');
-        btnOrder.disabled = false;
-        btnOrder.querySelector('.btn-text').textContent = 'Añadir al Carrito';
-      } finally {
-        btnOrder.classList.remove('loading');
+      if (product.custom_back_url) {
+        mockupImages.back.src = product.custom_back_url;
       }
     }
 
-    
-    
-    
+    window.addEventListener('DOMContentLoaded', loadDynamicProduct);
+
+    async function processOrder() {
+      const authDataStr = localStorage.getItem('auth_data');
+      if (!authDataStr) {
+        showStatus('Debes iniciar sesión para pedir', 'error');
+        return;
+      }
+      const authData = JSON.parse(authDataStr);
+      const userEmail = authData.user?.email || authData.email;
+
+      showStatus('Preparando tu pedido...', 'success');
+      btnOrder.disabled = true;
+      btnOrder.querySelector('.btn-text').textContent = 'Procesando...';
+
+      try {
+        const canvas = document.getElementById('mockupCanvas');
+        const mockupBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.8));
+
+        const prCanvas = document.createElement('canvas');
+        prCanvas.width = 4800;
+        prCanvas.height = 2400;
+        const prCtx = prCanvas.getContext('2d');
+        state.layers.forEach(layer => {
+          if (!layer) return;
+          const isBack = layer.placement === 'back';
+          const centerX = isBack ? 3600 : 1200;
+          const localX = centerX + parseInt(layer.posX) * 10 * (4800 / 2048);
+          const localY = 1200 - parseInt(layer.posY) * 5 * (2400 / 1024);
+
+          const drawPrInstance = (x, clipStartX) => {
+            prCtx.save();
+            if (clipStartX !== null) {
+              prCtx.beginPath();
+              prCtx.rect(clipStartX, 0, 2400, 2400);
+              prCtx.clip();
+            }
+            if (!layer.wrap) {
+              buildSafeZonePath(prCtx, layer.placement, 4800 / 2048);
+              prCtx.clip();
+            }
+            prCtx.translate(x, localY);
+            if (layer.mirror) prCtx.scale(-1, 1);
+            prCtx.rotate(layer.rotation * Math.PI / 180);
+
+            if (layer.type === 'image' && layer.imgObj) {
+              const baseScale = 2400 / Math.max(layer.imgObj.width, layer.imgObj.height);
+              const scale = layer.size / 100;
+              const w = layer.imgObj.width * baseScale * scale;
+              const h = layer.imgObj.height * baseScale * scale;
+              prCtx.drawImage(layer.imgObj, -w / 2, -h / 2, w, h);
+            } else if (layer.type === 'text') {
+              const scale = layer.size / 100;
+              const fontSize = 100 * scale * (4800 / 2048);
+              prCtx.font = `bold ${fontSize}px ${layer.font}`;
+              prCtx.fillStyle = layer.color || '#ffffff';
+              prCtx.textAlign = 'center';
+              prCtx.textBaseline = 'middle';
+              prCtx.fillText(layer.text, 0, 0);
+            }
+            prCtx.restore();
+          };
+
+          if (layer.wrap) {
+            const S = (layer.wrapWidth || 650) * (4800 / 2048);
+            const gap = 2400 - S;
+            const outer = 2400 + S;
+
+            drawPrInstance(localX, null);
+
+            if (localX < 2400) {
+              drawPrInstance(localX + gap, 2400);
+              drawPrInstance(localX + outer, 2400);
+            } else {
+              drawPrInstance(localX - gap, 0);
+              drawPrInstance(localX - outer, 0);
+            }
+          } else {
+            drawPrInstance(localX, null);
+          }
+        });
+        const prBlob = await new Promise(resolve => prCanvas.toBlob(resolve, 'image/png'));
+
+        const timestamp = Date.now();
+        const mockupPath = `mockups/${userEmail}_${timestamp}.jpg`;
+        const prPath = `print_ready/${userEmail}_${timestamp}.png`;
+
+        const { error: uploadMockupErr } = await window.supabaseClient.storage.from('orders').upload(mockupPath, mockupBlob);
+        if (uploadMockupErr) throw uploadMockupErr;
+
+        const { error: uploadPrErr } = await window.supabaseClient.storage.from('orders').upload(prPath, prBlob);
+        if (uploadPrErr) throw uploadPrErr;
+
+        const mockupUrl = window.supabaseClient.storage.from('orders').getPublicUrl(mockupPath).data.publicUrl;
+        const prUrl = window.supabaseClient.storage.from('orders').getPublicUrl(prPath).data.publicUrl;
+
+        const orderData = {
+          user_email: userEmail,
+          status: 'pending',
+          mockup_url: mockupUrl,
+          print_ready_front_url: prUrl,
+          print_ready_back_url: null,
+          details: {
+            size: selectedSize,
+            color: document.querySelector('.color-dot.active')?.dataset.color || 'white',
+            price: currentPrice
+          }
+        };
+
+        const { error: insertErr } = await window.supabaseClient.from('orders').insert([orderData]);
+        if (insertErr) throw insertErr;
+
+        showStatus('¡Pedido añadido al carrito!', 'success');
+
+        setTimeout(() => {
+          window.location.href = 'cart.html';
+        }, 1500);
+
+      } catch (err) {
+        console.error("Order error:", err);
+        showStatus('Error procesando el pedido: ' + err.message, 'error');
+        btnOrder.disabled = false;
+        btnOrder.querySelector('.btn-text').textContent = 'Reintentar Pedido';
+      }
+    }
 
     function showStatus(msg, type) {
       statusMsg.textContent = msg;
@@ -1601,21 +2004,6 @@
       statusMsg.className = 'status-msg';
     }
 
-    function formatFileSize(bytes) {
-      if (bytes < 1024) return `${bytes} B`;
-      if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-      return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-    }
-
-    function truncateFilename(name, maxLen) {
-      if (name.length <= maxLen) return name;
-      const ext = name.slice(name.lastIndexOf('.'));
-      return name.slice(0, maxLen - ext.length - 3) + '…' + ext;
-    }
-
-    
-    
-    
     const authModal = document.getElementById('authModal');
     const modalTitle = document.getElementById('modalTitle');
     const nameGroup = document.getElementById('nameGroup');
@@ -1625,7 +2013,6 @@
     const authButtonsContainer = document.getElementById('authButtonsContainer');
     const defaultBadge = document.getElementById('defaultBadge');
 
-    
     const pwdMeterContainer = document.getElementById('pwdMeterContainer');
     const pwdMeterFill = document.getElementById('pwdMeterFill');
     const pwdMeterText = document.getElementById('pwdMeterText');
@@ -1649,7 +2036,7 @@
         pwdMeterContainer.style.display = 'block';
         btnSubmit.textContent = 'Registrarse';
         modalFooter.innerHTML = '¿Ya tienes cuenta? <a href="#" onclick="openModal(\'login\'); return false;">Inicia sesión</a>';
-        updatePasswordMeter(); 
+        updatePasswordMeter();
       }
       authModal.style.display = 'flex';
       setTimeout(() => authModal.classList.add('active'), 10);
@@ -1664,15 +2051,14 @@
       if (e.target === authModal) closeModal();
     });
 
-    
-    authForm.addEventListener('submit', async (e) => {
+    authForm.addEventListener('submit', async function (e) {
       e.preventDefault();
       if (!supabaseClient) {
-        showToast("¡Falta configurar Supabase! Revisa el código.");
+        showStatus("¡Falta configurar Supabase! Revisa el código.", 'error');
         return;
       }
 
-      const name = document.getElementById('name').value;
+      const name = document.getElementById('name')?.value;
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
@@ -1685,7 +2071,6 @@
         let data = null;
 
         if (currentAuthMode === 'signup') {
-          
           const hasLength = password.length >= 8;
           const hasUpper = /[A-Z]/.test(password);
           const hasNumber = /[0-9]/.test(password);
@@ -1694,7 +2079,7 @@
           if (!hasLength || !hasUpper || !hasNumber || !hasSpecial) {
             btnSubmit.disabled = false;
             btnSubmit.textContent = originalText;
-            showToast("La contraseña debe tener mínimo 8 caracteres, 1 mayúscula, 1 número y 1 símbolo.");
+            showStatus("La contraseña debe tener mínimo 8 caracteres.", 'error');
             return;
           }
 
@@ -1708,120 +2093,59 @@
         }
 
         if (error) {
-          showToast(error.message);
+          showStatus(error.message, 'error');
         } else {
           isLoggedIn = true;
           closeModal();
           const userName = data.user?.user_metadata?.full_name || 'Usuario';
           updateUIForLoggedInUser(userName);
 
-          if (btnOrder.disabled === false || btnOrder.classList.contains('loading')) {
+          if (btnOrder.disabled === false) {
             processOrder();
           }
         }
       } catch (err) {
         console.error(err);
-        showToast('Error conectando al servidor.');
+        showStatus('Error conectando al servidor.', 'error');
       } finally {
         btnSubmit.disabled = false;
         btnSubmit.textContent = originalText;
       }
     });
 
-    
-    async // Con esta función verifico si el usuario ya inició sesión previamente
-function checkSession() {
+    async function checkSession() {
       if (!supabaseClient) return;
       try {
         const { data: { session } } = await supabaseClient.auth.getSession();
         if (session) {
           isLoggedIn = true;
-          const userName = session.user?.user_metadata?.full_name || 'Usuario';
+          const userName = session.user.user_metadata?.full_name || 'Usuario';
           updateUIForLoggedInUser(userName);
         }
-
-        supabaseClient.auth.onAuthStateChange((event, session) => {
-          if (event === 'SIGNED_OUT') location.reload();
-        });
-      } catch (err) {
-        console.error('Error comprobando sesión:', err);
+      } catch (e) {
+        console.error(e);
       }
     }
 
-    
-    // Para cerrar la sesión de forma segura y borrar el token local
-async function logout() {
-      if (!supabaseClient) return;
-      try {
-        await supabaseClient.auth.signOut();
-      } catch (err) {
-        console.error('Error cerrando sesión:', err);
-      }
-    }
-
-    
     function updateUIForLoggedInUser(userName) {
-      if (defaultBadge) defaultBadge.style.display = 'none';
+      if (!authButtonsContainer) return;
       authButtonsContainer.innerHTML = `
-        <span style="color: var(--c-light); font-size: 0.85rem;">Hola, ${userName}</span>
-        <button class="btn-auth" onclick="logout()" style="background: transparent; color: var(--c-mid); border: 1px solid var(--c-dark); padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.75rem; cursor: pointer;">Cerrar sesión</button>
+        <span style="color: var(--c-gold); font-size: 0.9rem;">Hola, ${userName}</span>
+        <button class="btn-secondary" onclick="logout()" style="padding: 0.4rem 1rem;">Salir</button>
       `;
     }
 
-    window.addEventListener('DOMContentLoaded', checkSession);
-
-    
-    async function loginWithGoogle() {
-      if (!supabaseClient) return showToast("Supabase no configurado");
-      const { data, error } = await supabaseClient.auth.signInWithOAuth({ provider: 'google' });
-      if (error) showToast("Error con Google: " + error.message);
+    async function logout() {
+      if (!supabaseClient) return;
+      await supabaseClient.auth.signOut();
+      localStorage.removeItem('auth_data');
+      window.location.reload();
     }
 
-    let currentProductId = null;
-
-    
-    
-    
-    async function loadDynamicProduct() {
-      const urlParams = new URLSearchParams(window.location.search);
-      currentProductId = urlParams.get('product');
-      
-      if (!currentProductId || !supabaseClient) return;
-
-      const { data: product, error } = await supabaseClient
-        .from('products')
-        .select('*')
-        .eq('id', currentProductId)
-        .single();
-
-      if (error || !product) {
-        console.error("Error cargando producto:", error);
-        document.getElementById('dynProductTitle').textContent = "Producto no encontrado";
-        return;
-      }
-
-      
-      document.getElementById('dynProductTitle').textContent = product.name;
-      document.getElementById('dynProductDesc').textContent = product.description || '';
-      document.getElementById('dynProductPrice').textContent = `Desde $${product.price} USD`;
-
-      
-      if (product.model_3d_url) {
-        const viewer = document.getElementById('tshirtModel');
-        if (viewer) {
-          viewer.setAttribute('src', product.model_3d_url);
-        }
-      }
-    }
-    
-    
-    window.addEventListener('DOMContentLoaded', loadDynamicProduct);
-
-    
     function updatePasswordMeter() {
+      if (!passwordInput || !pwdMeterFill || !pwdMeterText) return;
       const pwd = passwordInput.value;
       let strength = 0;
-
       const hasLength = pwd.length >= 8;
       const hasUpper = /[A-Z]/.test(pwd);
       const hasNumber = /[0-9]/.test(pwd);
@@ -1840,21 +2164,13 @@ async function logout() {
 
       if (pwd.length > 0) {
         if (strength === 0 || pwd.length < 6) {
-          width = '25%';
-          color = '#C0392B'; 
-          text = 'Débil (Faltan requisitos)';
+          width = '25%'; color = '#C0392B'; text = 'Débil';
         } else if (strength === 1 || strength === 2) {
-          width = '50%';
-          color = '#F39C12'; 
-          text = 'Regular (Añade símbolos o mayúsculas)';
+          width = '50%'; color = '#F39C12'; text = 'Regular';
         } else if (strength === 3) {
-          width = '75%';
-          color = '#27AE60'; 
-          text = 'Buena';
+          width = '75%'; color = '#27AE60'; text = 'Buena';
         } else if (strength >= 4) {
-          width = '100%';
-          color = '#27AE60'; 
-          text = 'Fuerte (Segura)';
+          width = '100%'; color = '#27AE60'; text = 'Fuerte (Segura)';
         }
       }
 
@@ -1863,12 +2179,22 @@ async function logout() {
       pwdMeterText.textContent = text;
     }
 
-    passwordInput.addEventListener('input', updatePasswordMeter);
+    if (passwordInput) passwordInput.addEventListener('input', updatePasswordMeter);
 
+    // Auth Check
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        localStorage.setItem('auth_data', JSON.stringify(session));
+        isLoggedIn = true;
+      } else {
+        localStorage.removeItem('auth_data');
+        isLoggedIn = false;
+      }
+    });
+
+    checkSession();
   </script>
-<script src="toast.js?v=3"></script>`n</body>
+  <script src="toast.js?v=3"></script>
+</body>
 
 </html>
-
-
-

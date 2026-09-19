@@ -20,6 +20,7 @@
 
   <!-- SDK de Supabase que importé para conectar mi backend -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
 
   <style>
     :root {
@@ -283,7 +284,7 @@
     }
 
 
-    .badge-3d {
+    .badge-custom {
       position: absolute;
       top: 1rem;
       right: 1rem;
@@ -684,7 +685,7 @@
   <section class="hero">
     <h1 class="hero-title">Expresa tu estilo con<br>prendas de calidad premium</h1>
     <p class="hero-subtitle">Descubre nuestro catálogo de prendas base. Diseña tu propia pieza única utilizando nuestro
-      personalizador interactivo 3D.</p>
+      personalizador interactivo.</p>
     <a href="#catalogo" class="btn-primary">Ver Colección</a>
   </section>
 
@@ -748,7 +749,10 @@
 
         <div class="form-group">
           <label for="password">Contraseña</label>
-          <input type="password" id="password" required placeholder="••••••••" autocomplete="new-password" />
+          <div style="position: relative;">
+            <input type="password" id="password" required placeholder="••••••••" autocomplete="new-password" style="padding-right: 3rem; width: 100%; box-sizing: border-box;" />
+            <button type="button" onclick="togglePasswordVisibility('password', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--c-light); font-size: 1.2rem; padding: 0;">👁️</button>
+          </div>
           <div class="pwd-meter-container" id="pwdMeterContainer">
             <div class="pwd-meter-bar">
               <div class="pwd-meter-fill" id="pwdMeterFill"></div>
@@ -831,8 +835,8 @@
 
 
     // Aquí pongo mi URL de Supabase para conectarme a la base de datos
-    const SUPABASE_URL = 'https://kynysaefypgugdvcfpzj.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5bnlzYWVmeXBndWdkdmNmcHpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5MTEwODgsImV4cCI6MjEwNDQ4NzA4OH0.GsC_nggMng_-5-3K2T1rApgctiyWcVXAeS7uw5H2ftU';
+    
+    
 
 
     let supabaseClient = null;
@@ -867,46 +871,46 @@
         let error = null;
         let data = null;
 
-              if (currentAuthMode === 'signup') {
+        if (currentAuthMode === 'signup') {
 
-                const hasLength = password.length >= 8;
-                const hasUpper = /[A-Z]/.test(password);
-                const hasNumber = /[0-9]/.test(password);
-                const hasSpecial = /[^A-Za-z0-9]/.test(password);
+          const hasLength = password.length >= 8;
+          const hasUpper = /[A-Z]/.test(password);
+          const hasNumber = /[0-9]/.test(password);
+          const hasSpecial = /[^A-Za-z0-9]/.test(password);
 
-                if (!hasLength || !hasUpper || !hasNumber || !hasSpecial) {
-                  btnSubmit.disabled = false;
-                  btnSubmit.textContent = originalText;
-                  showToast("La contraseña debe tener mínimo 8 caracteres, 1 mayúscula, 1 número y 1 símbolo.");
-                  return;
-                }
+          if (!hasLength || !hasUpper || !hasNumber || !hasSpecial) {
+            btnSubmit.disabled = false;
+            btnSubmit.textContent = originalText;
+            showToast("La contraseña debe tener mínimo 8 caracteres, 1 mayúscula, 1 número y 1 símbolo.");
+            return;
+          }
 
-                const result = await supabaseClient.auth.signUp({
-                  email: email,
-                  password: password,
-                  options: {
-                    data: { full_name: name }
-                  }
-                });
-                error = result.error;
-                data = result.data;
-              } else {
-                const result = await supabaseClient.auth.signInWithPassword({
-                  email: email,
-                  password: password
-                });
-                error = result.error;
-                data = result.data;
-              }
+          const result = await supabaseClient.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+              data: { full_name: name }
+            }
+          });
+          error = result.error;
+          data = result.data;
+        } else {
+          const result = await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+          });
+          error = result.error;
+          data = result.data;
+        }
 
-              if (error) {
-                showToast(error.message);
-              } else {
-                closeModal();
+        if (error) {
+          showToast(error.message);
+        } else {
+          closeModal();
 
-                // Agregué esto para detectar si Supabase requiere confirmación de correo
-                if (currentAuthMode === 'signup' && data.user && !data.session) {
-                  authForm.innerHTML = `
+          // Agregué esto para detectar si Supabase requiere confirmación de correo
+          if (currentAuthMode === 'signup' && data.user && !data.session) {
+            authForm.innerHTML = `
                     <div style="text-align: center; padding: 1rem 0;">
                       <span style="font-size: 3.5rem; display: block; margin-bottom: 1rem;">✉️</span>
                       <h3 style="color: var(--c-gold); margin-bottom: 1rem; font-family: 'Playfair Display', serif; font-size: 1.8rem;">¡Revisa tu correo!</h3>
@@ -917,90 +921,90 @@
                       <button type="button" class="btn-submit" style="margin-top: 2rem;" onclick="location.reload()">Entendido</button>
                     </div>
                   `;
-                  
-                  const googleBtn = document.querySelector('.auth-btn-google');
-                  const divider = document.querySelector('.divider');
-                  if (googleBtn) googleBtn.style.display = 'none';
-                  if (divider) divider.style.display = 'none';
-                  
-                  modalFooter.style.display = 'none';
-                  modalTitle.style.display = 'none';
-                  modalSubtitle.style.display = 'none';
-                } else {
-                  const userName = data.user?.user_metadata?.full_name || 'Usuario';
-                  updateUIForLoggedInUser(userName);
-                }
-              }
-            } catch (err) {
-              console.error(err);
-              showToast('Error de conexión con Supabase.');
-            } finally {
-              btnSubmit.disabled = false;
-              btnSubmit.textContent = originalText;
-            }
-          });
 
-          async function forgotPassword() {
-            const emailInput = document.getElementById('email').value.trim();
-            if (!emailInput) {
-              showToast("Por favor ingresa tu correo electrónico arriba primero.", "error");
-              return;
-            }
+            const googleBtn = document.querySelector('.auth-btn-google');
+            const divider = document.querySelector('.divider');
+            if (googleBtn) googleBtn.style.display = 'none';
+            if (divider) divider.style.display = 'none';
 
-            btnSubmit.disabled = true;
-            const originalText = btnSubmit.textContent;
-            btnSubmit.textContent = 'Enviando...';
-
-            const { data, error } = await supabaseClient.auth.resetPasswordForEmail(emailInput, {
-              redirectTo: window.location.origin + '/profile.html',
-            });
-
-            if (error) {
-              showToast("Error: " + error.message, "error");
-            } else {
-              showToast("Te hemos enviado un correo para restablecer tu contraseña. Revisa tu bandeja de entrada o spam.", "success");
-            }
-
-            btnSubmit.disabled = false;
-            btnSubmit.textContent = originalText;
+            modalFooter.style.display = 'none';
+            modalTitle.style.display = 'none';
+            modalSubtitle.style.display = 'none';
+          } else {
+            const userName = data.user?.user_metadata?.full_name || 'Usuario';
+            updateUIForLoggedInUser(userName);
           }
+        }
+      } catch (err) {
+        console.error(err);
+        showToast('Error de conexión con Supabase.');
+      } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.textContent = originalText;
+      }
+    });
+
+    async function forgotPassword() {
+      const emailInput = document.getElementById('email').value.trim();
+      if (!emailInput) {
+        showToast("Por favor ingresa tu correo electrónico arriba primero.", "error");
+        return;
+      }
+
+      btnSubmit.disabled = true;
+      const originalText = btnSubmit.textContent;
+      btnSubmit.textContent = 'Enviando...';
+
+      const { data, error } = await supabaseClient.auth.resetPasswordForEmail(emailInput, {
+        redirectTo: window.location.origin + '/profile.html',
+      });
+
+      if (error) {
+        showToast("Error: " + error.message, "error");
+      } else {
+        showToast("Te hemos enviado un correo para restablecer tu contraseña. Revisa tu bandeja de entrada o spam.", "success");
+      }
+
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = originalText;
+    }
 
 
-          // Con esta función verifico si el usuario ya inició sesión previamente
-          async function checkSession() {
-            if (!supabaseClient) return;
+    // Con esta función verifico si el usuario ya inició sesión previamente
+    async function checkSession() {
+      if (!supabaseClient) return;
 
-            try {
-              const { data: { session } } = await supabaseClient.auth.getSession();
-              if (session) {
-                const userName = session.user?.user_metadata?.full_name || 'Usuario';
-                updateUIForLoggedInUser(userName);
-              }
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session) {
+          const userName = session.user?.user_metadata?.full_name || 'Usuario';
+          updateUIForLoggedInUser(userName);
+        }
 
-              supabaseClient.auth.onAuthStateChange((event, session) => {
-                if (event === 'SIGNED_OUT') {
-                  location.reload();
-                }
-              });
-            } catch (err) {
-              console.error('Error verificando sesión:', err);
-            }
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+          if (event === 'SIGNED_OUT') {
+            location.reload();
           }
+        });
+      } catch (err) {
+        console.error('Error verificando sesión:', err);
+      }
+    }
 
 
-          // Para cerrar la sesión de forma segura y borrar el token local
-          async function logout() {
-            if (!supabaseClient) return;
-            try {
-              await supabaseClient.auth.signOut();
-            } catch (err) {
-              console.error('Error cerrando sesión:', err);
-            }
-          }
+    // Para cerrar la sesión de forma segura y borrar el token local
+    async function logout() {
+      if (!supabaseClient) return;
+      try {
+        await supabaseClient.auth.signOut();
+      } catch (err) {
+        console.error('Error cerrando sesión:', err);
+      }
+    }
 
 
-          function updateUIForLoggedInUser(userName) {
-            authButtonsContainer.innerHTML = `
+    function updateUIForLoggedInUser(userName) {
+      authButtonsContainer.innerHTML = `
         <a href="checkout.html" class="cart-btn">
           🛒<span class="cart-badge" id="cartBadge">0</span>
         </a>
@@ -1008,129 +1012,129 @@
         <button class="btn-auth btn-signup" onclick="logout()" style="padding: 0.4rem 0.8rem;">Cerrar sesión</button>
       `;
 
-            if (typeof updateCartBadge === 'function') updateCartBadge();
-          }
+      if (typeof updateCartBadge === 'function') updateCartBadge();
+    }
 
 
-          window.addEventListener('DOMContentLoaded', () => {
-            checkSession();
-            fetchCategories();
-            fetchProducts();
-          });
+    window.addEventListener('DOMContentLoaded', () => {
+      checkSession();
+      fetchCategories();
+      fetchProducts();
+    });
 
-          let currentCategoryId = 'all';
+    let currentCategoryId = 'all';
 
-          async function fetchCategories() {
-            if (!supabaseClient) return;
-            const { data: categories, error } = await supabaseClient
-              .from('categories')
-              .select('*')
-              .order('name');
+    async function fetchCategories() {
+      if (!supabaseClient) return;
+      const { data: categories, error } = await supabaseClient
+        .from('categories')
+        .select('*')
+        .order('name');
 
-            if (error || !categories) return;
+      if (error || !categories) return;
 
-            const filterContainer = document.getElementById('categoryFilters');
-            categories.forEach(c => {
-              const btn = document.createElement('button');
-              btn.className = 'filter-btn';
-              btn.dataset.id = c.id;
-              btn.textContent = c.name;
-              btn.onclick = () => {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentCategoryId = c.id;
-                fetchProducts();
-              };
-              filterContainer.appendChild(btn);
-            });
+      const filterContainer = document.getElementById('categoryFilters');
+      categories.forEach(c => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn';
+        btn.dataset.id = c.id;
+        btn.textContent = c.name;
+        btn.onclick = () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentCategoryId = c.id;
+          fetchProducts();
+        };
+        filterContainer.appendChild(btn);
+      });
 
-            const allBtn = filterContainer.querySelector('[data-id="all"]');
-            if (allBtn) {
-              allBtn.onclick = () => {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                allBtn.classList.add('active');
-                currentCategoryId = 'all';
-                fetchProducts();
-              };
-            }
-          }
+      const allBtn = filterContainer.querySelector('[data-id="all"]');
+      if (allBtn) {
+        allBtn.onclick = () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          allBtn.classList.add('active');
+          currentCategoryId = 'all';
+          fetchProducts();
+        };
+      }
+    }
 
-          async function toggleFavorite(productId, btnElement) {
-            if (!supabaseClient) return;
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (!session) {
-              showToast("Por favor inicia sesión para guardar productos en favoritos.");
-              loginWithGoogle();
-              return;
-            }
+    async function toggleFavorite(productId, btnElement) {
+      if (!supabaseClient) return;
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        showToast("Por favor inicia sesión para guardar productos en favoritos.");
+        loginWithGoogle();
+        return;
+      }
 
-            const userId = session.user.id;
-            const isActive = btnElement.classList.contains('active');
+      const userId = session.user.id;
+      const isActive = btnElement.classList.contains('active');
 
-            if (isActive) {
+      if (isActive) {
 
-              const { error } = await supabaseClient.from('favorites').delete().match({ user_id: userId, product_id: productId });
-              if (!error) btnElement.classList.remove('active');
-            } else {
+        const { error } = await supabaseClient.from('favorites').delete().match({ user_id: userId, product_id: productId });
+        if (!error) btnElement.classList.remove('active');
+      } else {
 
-              const { error } = await supabaseClient.from('favorites').insert([{ user_id: userId, product_id: productId }]);
-              if (!error) btnElement.classList.add('active');
-            }
-          }
+        const { error } = await supabaseClient.from('favorites').insert([{ user_id: userId, product_id: productId }]);
+        if (!error) btnElement.classList.add('active');
+      }
+    }
 
-          async function fetchProducts() {
-            const grid = document.getElementById('productGrid');
-            if (!supabaseClient) return;
+    async function fetchProducts() {
+      const grid = document.getElementById('productGrid');
+      if (!supabaseClient) return;
 
-            let query = supabaseClient.from('products').select('*').eq('is_active', true).gt('stock', 0).order('id', { ascending: false });
-            if (currentCategoryId !== 'all') {
-              query = query.eq('category_id', currentCategoryId);
-            }
+      let query = supabaseClient.from('products').select('*').eq('is_active', true).gt('stock', 0).order('id', { ascending: false });
+      if (currentCategoryId !== 'all') {
+        query = query.eq('category_id', currentCategoryId);
+      }
 
-            const { data: products, error } = await query;
+      const { data: products, error } = await query;
 
-            if (error) {
-              grid.innerHTML = `<p style="grid-column: 1/-1; color: var(--c-danger);">Error cargando catálogo: ${error.message}</p>`;
-              return;
-            }
+      if (error) {
+        grid.innerHTML = `<p style="grid-column: 1/-1; color: var(--c-danger);">Error cargando catálogo: ${error.message}</p>`;
+        return;
+      }
 
-            if (products.length === 0) {
-              grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--c-mid); padding: 3rem;">No hay productos disponibles por ahora.</p>`;
-              return;
-            }
+      if (products.length === 0) {
+        grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--c-mid); padding: 3rem;">No hay productos disponibles por ahora.</p>`;
+        return;
+      }
 
-            let userFavorites = [];
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (session) {
-              const { data: favs } = await supabaseClient.from('favorites').select('product_id').eq('user_id', session.user.id);
-              if (favs) userFavorites = favs.map(f => f.product_id);
-            }
+      let userFavorites = [];
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session) {
+        const { data: favs } = await supabaseClient.from('favorites').select('product_id').eq('user_id', session.user.id);
+        if (favs) userFavorites = favs.map(f => f.product_id);
+      }
 
-            grid.innerHTML = '';
-            products.forEach(p => {
-              const article = document.createElement('article');
-              article.className = 'product-card';
+      grid.innerHTML = '';
+      products.forEach(p => {
+        const article = document.createElement('article');
+        article.className = 'product-card';
 
-              const isFav = userFavorites.includes(p.id);
-              const favClass = isFav ? 'btn-favorite active' : 'btn-favorite';
-              const favIcon = isFav ? '♥' : '♡';
+        const isFav = userFavorites.includes(p.id);
+        const favClass = isFav ? 'btn-favorite active' : 'btn-favorite';
+        const favIcon = isFav ? '♥' : '♡';
 
-              let imgHtml = p.image_url
-                ? `<img src="${p.image_url}" style="width:100%; height:100%; object-fit:cover;">`
-                : `<div style="width:100%; height:100%; background: #151515; display:flex; align-items:center; justify-content:center;"><span style="color:#333; font-size: 3rem;">👕</span></div>`;
+        let imgHtml = p.image_url
+          ? `<img src="${p.image_url}" style="width:100%; height:100%; object-fit:cover;">`
+          : `<div style="width:100%; height:100%; background: #151515; display:flex; align-items:center; justify-content:center;"><span style="color:#333; font-size: 3rem;">👕</span></div>`;
 
-              let badge3D = p.has_3d_support ? `<span class="badge-3d">★ SOPORTE 3D</span>` : '';
+        let badge3D = p.is_customizable ? `<span class="badge-custom">★ PERSONALIZABLE</span>` : '';
 
-              let actionBtn = '';
-              if (p.stock <= 0) {
-                actionBtn = `<button class="btn-secondary" disabled style="opacity:0.5; cursor:not-allowed;">Agotado</button>`;
-              } else if (p.has_3d_support) {
-                actionBtn = `<a href="personalizador.html?product=${p.id}" class="btn-secondary">Personalizar en 3D</a>`;
-              } else {
-                actionBtn = `<button class="btn-secondary" onclick="addToCart('${p.id}', '${p.name}', ${p.price}, '${p.image_url || ''}')">Añadir al carrito</button>`;
-              }
+        let actionBtn = '';
+        if (p.stock <= 0) {
+          actionBtn = `<button class="btn-secondary" disabled style="opacity:0.5; cursor:not-allowed;">Agotado</button>`;
+        } else if (p.is_customizable) {
+          actionBtn = `<a href="personalizador.html?product=${p.id}" class="btn-secondary">Personalizar</a>`;
+        } else {
+          actionBtn = `<button class="btn-secondary" onclick="addToCart('${p.id}', '${p.name}', ${p.price}, '${p.image_url || ''}')">Añadir al carrito</button>`;
+        }
 
-              article.innerHTML = `
+        article.innerHTML = `
           <div class="product-image">
             <button class="${favClass}" onclick="toggleFavorite(${p.id}, this)" title="Guardar para más tarde">${favIcon}</button>
             ${imgHtml}
@@ -1145,66 +1149,77 @@
             </div>
           </div>
         `;
-              grid.appendChild(article);
-            });
-          }
+        grid.appendChild(article);
+      });
+    }
 
 
-          async function loginWithGoogle() {
-            if (!supabaseClient) return showToast("Supabase no configurado");
-            const { data, error } = await supabaseClient.auth.signInWithOAuth({
-              provider: 'google',
-            });
-            if (error) showToast("Error con Google: " + error.message);
-          }
+    async function loginWithGoogle() {
+      if (!supabaseClient) return showToast("Supabase no configurado");
+      const { data, error } = await supabaseClient.auth.signInWithOAuth({
+        provider: 'google',
+      });
+      if (error) showToast("Error con Google: " + error.message);
+    }
 
 
-          function updatePasswordMeter() {
-            const pwd = passwordInput.value;
-            let strength = 0;
+    function updatePasswordMeter() {
+      const pwd = passwordInput.value;
+      let strength = 0;
 
-            const hasLength = pwd.length >= 8;
-            const hasUpper = /[A-Z]/.test(pwd);
-            const hasNumber = /[0-9]/.test(pwd);
-            const hasSpecial = /[^A-Za-z0-9]/.test(pwd);
+      const hasLength = pwd.length >= 8;
+      const hasUpper = /[A-Z]/.test(pwd);
+      const hasNumber = /[0-9]/.test(pwd);
+      const hasSpecial = /[^A-Za-z0-9]/.test(pwd);
 
-            if (pwd.length > 0) {
-              if (hasLength) strength += 1;
-              if (hasUpper) strength += 1;
-              if (hasNumber) strength += 1;
-              if (hasSpecial) strength += 1;
-            }
+      if (pwd.length > 0) {
+        if (hasLength) strength += 1;
+        if (hasUpper) strength += 1;
+        if (hasNumber) strength += 1;
+        if (hasSpecial) strength += 1;
+      }
 
-            let width = '0%';
-            let color = 'transparent';
-            let text = 'Mínimo 8 caracteres, 1 mayúscula, 1 número y 1 símbolo.';
+      let width = '0%';
+      let color = 'transparent';
+      let text = 'Mínimo 8 caracteres, 1 mayúscula, 1 número y 1 símbolo.';
 
-            if (pwd.length > 0) {
-              if (strength === 0 || pwd.length < 6) {
-                width = '25%';
-                color = '#C0392B';
-                text = 'Débil (Faltan requisitos)';
-              } else if (strength === 1 || strength === 2) {
-                width = '50%';
-                color = '#F39C12';
-                text = 'Regular (Añade símbolos o mayúsculas)';
-              } else if (strength === 3) {
-                width = '75%';
-                color = '#27AE60';
-                text = 'Buena';
-              } else if (strength >= 4) {
-                width = '100%';
-                color = '#27AE60';
-                text = 'Fuerte (Segura)';
-              }
-            }
+      if (pwd.length > 0) {
+        if (strength === 0 || pwd.length < 6) {
+          width = '25%';
+          color = '#C0392B';
+          text = 'Débil (Faltan requisitos)';
+        } else if (strength === 1 || strength === 2) {
+          width = '50%';
+          color = '#F39C12';
+          text = 'Regular (Añade símbolos o mayúsculas)';
+        } else if (strength === 3) {
+          width = '75%';
+          color = '#27AE60';
+          text = 'Buena';
+        } else if (strength >= 4) {
+          width = '100%';
+          color = '#27AE60';
+          text = 'Fuerte (Segura)';
+        }
+      }
 
-            pwdMeterFill.style.width = width;
-            pwdMeterFill.style.backgroundColor = color;
-            pwdMeterText.textContent = text;
-          }
+      pwdMeterFill.style.width = width;
+      pwdMeterFill.style.backgroundColor = color;
+      pwdMeterText.textContent = text;
+    }
 
-          passwordInput.addEventListener('input', updatePasswordMeter);
+    passwordInput.addEventListener('input', updatePasswordMeter);
+
+    function togglePasswordVisibility(inputId, btn) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = '🙈';
+      } else {
+        input.type = 'password';
+        btn.textContent = '👁️';
+      }
+    }
 
   </script>
 

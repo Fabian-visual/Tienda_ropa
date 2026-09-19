@@ -5,13 +5,14 @@
   <!-- Configuración de metadatos y fuentes que incluí para el estilo visual -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi Cuenta - OVERMARK Studio</title>
+  <title>Mi Cuenta - OVERMARK</title>
 
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600&display=swap"
     rel="stylesheet" />
   <!-- SDK de Supabase que importé para conectar mi backend -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
   <script src="cart.js?v=3"></script>
 
   <style>
@@ -544,11 +545,17 @@
           <h2 style="font-family:var(--ff-display); font-size:1.5rem; margin-bottom:1.5rem;">Cambiar Contraseña</h2>
           <div class="form-group">
             <label>Nueva Contraseña</label>
-            <input type="password" id="newPassword" placeholder="••••••••">
+            <div style="position: relative;">
+              <input type="password" id="newPassword" placeholder="••••••••" style="padding-right: 3rem; width: 100%; box-sizing: border-box;">
+              <button type="button" onclick="togglePasswordVisibility('newPassword', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--c-light); font-size: 1.2rem; padding: 0;">👁️</button>
+            </div>
           </div>
           <div class="form-group">
             <label>Confirmar Contraseña</label>
-            <input type="password" id="confirmNewPassword" placeholder="••••••••">
+            <div style="position: relative;">
+              <input type="password" id="confirmNewPassword" placeholder="••••••••" style="padding-right: 3rem; width: 100%; box-sizing: border-box;">
+              <button type="button" onclick="togglePasswordVisibility('confirmNewPassword', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--c-light); font-size: 1.2rem; padding: 0;">👁️</button>
+            </div>
           </div>
           <button class="btn-submit" style="background: var(--c-dark); color: var(--c-cream);" onclick="changePassword()">Actualizar Contraseña</button>
           <p id="pwdStatus" style="margin-top: 1rem; font-size: 0.85rem;"></p>
@@ -598,9 +605,19 @@
   </main>
 
   <script>
+    function togglePasswordVisibility(inputId, btn) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = '🙈';
+      } else {
+        input.type = 'password';
+        btn.textContent = '👁️';
+      }
+    }
     // Aquí pongo mi URL de Supabase para conectarme a la base de datos
-    const SUPABASE_URL = 'https://kynysaefypgugdvcfpzj.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5bnlzYWVmeXBndWdkdmNmcHpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5MTEwODgsImV4cCI6MjEwNDQ4NzA4OH0.GsC_nggMng_-5-3K2T1rApgctiyWcVXAeS7uw5H2ftU';
+    
+    
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let currentUser = null;
@@ -773,7 +790,7 @@
           let price = item.price || 0;
           let img = (item.type === 'custom' && item.image_front) ? item.image_front : (item.image ? item.image : '');
           let imgTag = img ? `<img src="${escapeHTML(img)}" class="order-item-img">` : `<div class="order-item-img" style="display:flex; align-items:center; justify-content:center;">👕</div>`;
-          let meta = item.type === 'custom' ? `Talla: ${escapeHTML(item.size)} • 3D Custom` : 'Standard';
+          let meta = item.type === 'custom' ? `Talla: ${escapeHTML(item.size)} • Personalizado` : 'Standard';
           return `
             <div class="order-item-row">
               ${imgTag}
