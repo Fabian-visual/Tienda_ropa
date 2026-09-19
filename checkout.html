@@ -445,6 +445,16 @@
         const { data: { user } } = await supabaseClient.auth.getUser();
         if (!user) throw new Error("Debes iniciar sesión para completar la compra.");
 
+        // Validar que el usuario haya completado su teléfono y dirección
+        const { data: profile } = await supabaseClient.from('profiles').select('phone, address').eq('id', user.id).single();
+        if (!profile || !profile.phone || !profile.address || profile.phone.length < 5 || profile.address.length < 5) {
+          document.getElementById('checkoutStatus').textContent = 'Debes completar tu Teléfono y Dirección en "Mi Cuenta" para hacer el pedido.';
+          document.getElementById('checkoutStatus').innerHTML += '<br><a href="profile.html" style="color:var(--c-gold); text-decoration:underline; margin-top:0.5rem; display:inline-block;">Ir a Mi Cuenta</a>';
+          btn.disabled = false;
+          btn.textContent = 'FINALIZAR COMPRA';
+          return;
+        }
+
         let receiptUrl = null;
 
         
