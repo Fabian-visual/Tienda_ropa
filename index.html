@@ -985,6 +985,8 @@
         supabaseClient.auth.onAuthStateChange((event, session) => {
           if (event === 'SIGNED_OUT') {
             location.reload();
+          } else if (event === 'SIGNED_IN') {
+            location.reload();
           }
         });
       } catch (err) {
@@ -1066,7 +1068,7 @@
       const { data: { session } } = await supabaseClient.auth.getSession();
       if (!session) {
         showToast("Por favor inicia sesión para guardar productos en favoritos.");
-        loginWithGoogle();
+        openModal('login');
         return;
       }
 
