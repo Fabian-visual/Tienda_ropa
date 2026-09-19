@@ -2138,6 +2138,7 @@
 
     async function logout() {
       if (!supabaseClient) return;
+      localStorage.removeItem('overmark_cart');
       await supabaseClient.auth.signOut();
       localStorage.removeItem('auth_data');
       window.location.reload();

@@ -997,6 +997,7 @@
     async function logout() {
       if (!supabaseClient) return;
       try {
+        localStorage.removeItem('overmark_cart');
         await supabaseClient.auth.signOut();
       } catch (err) {
         console.error('Error cerrando sesión:', err);

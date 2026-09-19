@@ -1140,6 +1140,7 @@
 
     // Para cerrar la sesión de forma segura y borrar el token local
 async function logout() {
+      localStorage.removeItem('overmark_cart');
       await supabaseClient.auth.signOut();
       window.location.href = 'index.html';
     }
