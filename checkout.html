@@ -179,6 +179,9 @@
         </label>
       </div>
 
+      <!-- Honeypot anti-spam (invisible para usuarios reales) -->
+      <input type="text" id="pmWebsiteHoneypot" name="pmWebsiteHoneypot" style="display:none;" tabindex="-1" autocomplete="off" placeholder="Deja este campo vacío">
+
       <button class="btn-submit" id="btnCheckout" onclick="processCheckout()">Confirmar Pago Móvil <span>&#10140;</span></button>
       <div id="paypal-button-container" style="display: none; margin-top: 1rem;"></div>
       
@@ -397,6 +400,23 @@
         return;
       }
 
+      // Verificación de Honeypot Anti-Spam
+      const honeypot = document.getElementById('pmWebsiteHoneypot').value;
+      if (honeypot) {
+        console.warn('Bot detectado.');
+        return; // Detener silenciosamente si el honeypot está lleno
+      }
+
+      // Verificación de Rate Limiting en LocalStorage (30 segundos)
+      const lastOrderTime = localStorage.getItem('lastOrderTime');
+      if (lastOrderTime) {
+        const timeDiff = Date.now() - parseInt(lastOrderTime);
+        if (timeDiff < 30000) { // 30 segundos
+          document.getElementById('checkoutStatus').textContent = 'Por favor, espera unos segundos antes de enviar otro pedido.';
+          return;
+        }
+      }
+
       const cart = getCart();
       if (cart.length === 0) return;
 
@@ -458,21 +478,24 @@
           p_payment_receipt_url: receiptUrl
         });
         
-        if (error) throw error;
+        if (error) {
+          throw new Error(error.message);
+        }
 
-        
+        // Marcar la orden como exitosa y prevenir spam futuro
+        localStorage.setItem('lastOrderTime', Date.now().toString());
+
         const customerName = user.user_metadata?.full_name || 'Desconocido';
-        sendOrderNotification(data.id, currentTotal, 'Pago Movil', cart, customerName, user.email);
+        await sendOrderNotification(data.id, currentTotal, 'Pago Movil', cart, customerName, user.email);
 
         clearCart();
         showToast(`¡Pedido #${data.order_code} confirmado exitosamente!`, "success");
         setTimeout(() => window.location.href = 'index.html', 2000);
 
-      } catch (err) {
-        console.error(err);
-        document.getElementById('checkoutStatus').textContent = err.message;
+      } catch (e) {
+        document.getElementById('checkoutStatus').textContent = e.message;
         btn.disabled = false;
-        btn.textContent = 'Confirmar Pago Móvil';
+        btn.textContent = 'Confirmar Pago Móvil \u2794';
       }
     }
 
